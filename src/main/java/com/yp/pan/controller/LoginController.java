@@ -19,4 +19,9 @@ public class LoginController {
     public UserInfoDto login(@RequestBody LoginDto loginDto) throws Exception{
         return null;
     }
+
+    @RequestMapping("/test")
+    public Object test(){
+        return "00";
+    }
 }
