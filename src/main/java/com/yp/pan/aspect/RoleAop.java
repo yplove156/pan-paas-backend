@@ -6,6 +6,10 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 
+/**
+ * @author Administrator
+ */
+@SuppressWarnings("AlibabaRemoveCommentedCode")
 @Aspect
 @Component
 public class RoleAop {

@@ -1,7 +1,6 @@
 package com.yp.pan.test;
 
 import com.yp.pan.annotation.RequireRole;
-import com.yp.pan.model.Obj;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
