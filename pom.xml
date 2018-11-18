@@ -79,7 +79,12 @@
             <version>2.1.0</version>
         </dependency>
 
-
+        <!-- https://mvnrepository.com/artifact/io.fabric8/kubernetes-client -->
+        <dependency>
+            <groupId>io.fabric8</groupId>
+            <artifactId>kubernetes-client</artifactId>
+            <version>4.1.0</version>
+        </dependency>
 
     </dependencies>
 
