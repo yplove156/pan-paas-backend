@@ -7,6 +7,7 @@ import io.fabric8.kubernetes.api.model.Namespace;
 import io.fabric8.kubernetes.api.model.ObjectMeta;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Comparator;
@@ -55,4 +56,26 @@ public class NamespaceController {
             throw new ServerException(CustomEnum.NAMESPACE_CREATE_ERROR);
         }
     }
+
+    @DeleteMapping("/{name}")
+    public Object deleteNamespace(@PathVariable String name) throws Exception {
+        if (StringUtils.isEmpty(name)) {
+            throw new ServerException(CustomEnum.NAMESPACE_DELETE_ERROR);
+        }
+        Boolean delete = client.namespaces().withName(name).delete();
+        if (delete) {
+            return name;
+        }
+        throw new ServerException(CustomEnum.NAMESPACE_DELETE_ERROR);
+    }
+
+//    @PostMapping("/{name}/{newName}")
+//    public Object editNamespace(@PathVariable String name, @PathVariable String newName) throws Exception {
+//        if (StringUtils.isEmpty(name) || StringUtils.isEmpty(newName)) {
+//            throw new ServerException(CustomEnum.NAMESPACE_EDIT_ERROR);
+//        }
+//        Namespace namespace = client.namespaces().withName(name).get();
+//        namespace.getMetadata().setName(newName);
+//        return client.namespaces().withName(name).createOrReplace(namespace);
+//    }
 }

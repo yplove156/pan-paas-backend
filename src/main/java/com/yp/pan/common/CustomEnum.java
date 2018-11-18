@@ -21,6 +21,10 @@ public enum CustomEnum {
 
     NAMESPACE_CREATE_ERROR("20001", "命名空间创建失败"),
 
+    NAMESPACE_DELETE_ERROR("20002", "命名空间删除失败"),
+
+    NAMESPACE_EDIT_ERROR("20003", "命名空间编辑失败"),
+
     /**
      * 出现未知异常
      */
