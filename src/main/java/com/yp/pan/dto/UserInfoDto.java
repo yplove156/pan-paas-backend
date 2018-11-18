@@ -13,6 +13,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class UserInfoDto {
-    private UserInfo userInfo;
+    private String username;
+    private String nick;
+    private String photo;
+    private String role;
     private String token;
 }
