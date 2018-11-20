@@ -14,19 +14,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class RoleAop {
 
-//    @Pointcut("@annotation(com.yp.pan.annotation.RequireRole)")
-//    private void cut() {
-//    }
-
     @Around("@annotation(requireRole)")
-    public Object around(ProceedingJoinPoint proceedingJoinPoint, RequireRole requireRole) {
+    public Object around(ProceedingJoinPoint proceedingJoinPoint, RequireRole requireRole) throws Throwable {
         String value = requireRole.value();
         System.out.println(value);
-        try {
-            return proceedingJoinPoint.proceed();
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-        }
-        return null;
+        return proceedingJoinPoint.proceed();
     }
 }

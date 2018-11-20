@@ -10,7 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.xml.crypto.Data;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -32,7 +37,16 @@ public class NamespaceController {
 
     @GetMapping
     public Object namespaces() throws Exception {
-        return client.namespaces().list().getItems();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        return client.namespaces().list().getItems().stream().sorted((x, y) -> {
+            try {
+                Long dateX = sdf.parse(x.getMetadata().getCreationTimestamp()).getTime();
+                Long dateY = sdf.parse(y.getMetadata().getCreationTimestamp()).getTime();
+                return dateX.compareTo(dateY);
+            } catch (ParseException e) {
+                return 1;
+            }
+        });
     }
 
     @PutMapping
@@ -42,6 +56,9 @@ public class NamespaceController {
         }
         ObjectMeta namespaceOM = new ObjectMeta();
         namespaceOM.setName(namespaceDto.getName().toLowerCase());
+        HashMap<String,String> customMap = new HashMap<>(1);
+        customMap.put("desc",namespaceDto.getDesc());
+        namespaceOM.setAnnotations(customMap);
         Namespace namespace = new Namespace();
         namespace.setMetadata(namespaceOM);
         Namespace replaceOrNew;

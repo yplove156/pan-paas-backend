@@ -1,5 +1,6 @@
 package com.yp.pan.controller;
 
+import com.yp.pan.annotation.RequireRole;
 import com.yp.pan.common.CustomEnum;
 import com.yp.pan.dto.LoginDto;
 import com.yp.pan.dto.UserInfoDto;
@@ -35,6 +36,7 @@ public class LoginController {
         this.userService = userService;
     }
 
+    @RequireRole("admin")
     @PostMapping("/login")
     public Object login(@RequestBody LoginDto loginDto) throws Exception {
         if (StringUtils.isEmpty(loginDto.getUsername()) || StringUtils.isEmpty(loginDto.getPassword())) {

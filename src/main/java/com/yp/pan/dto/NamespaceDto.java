@@ -13,4 +13,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class NamespaceDto {
     private String name;
+    private String desc;
 }
