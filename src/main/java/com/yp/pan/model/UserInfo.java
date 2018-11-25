@@ -17,6 +17,9 @@ public class UserInfo {
     private String nick;
     private String photo;
     private String role;
+    private String name;
+    private String phone;
+    private String position;
     private Long createTime;
     private Long updateTime;
     private Integer deleteFlag;

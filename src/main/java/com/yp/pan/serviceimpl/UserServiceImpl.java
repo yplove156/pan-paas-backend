@@ -6,6 +6,8 @@ import com.yp.pan.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * UserServiceImpl class
  *
@@ -26,5 +28,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserInfo findByUsername(String username) throws Exception {
         return userMapper.findByUsername(username);
+    }
+
+    @Override
+    public List<UserInfo> userList() throws Exception {
+        return userMapper.userList();
+    }
+
+    @Override
+    public int addUser(UserInfo userInfo) throws Exception {
+        return userMapper.addUser(userInfo);
     }
 }

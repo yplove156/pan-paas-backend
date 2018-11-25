@@ -1,24 +1,23 @@
 package com.yp.pan.dto;
 
-import com.yp.pan.model.UserInfo;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * UserInfoDto class
+ * CreateUserDto class
  *
  * @author Administrator
- * @date 2018/11/15
+ * @date 2018/11/25
  */
 @Data
 @NoArgsConstructor
-public class UserInfoDto {
+public class CreateUserDto {
     private String username;
+    private String password;
     private String nick;
-    private String photo;
     private String role;
-    private String name;
+    private String photo;
     private String phone;
+    private String name;
     private String position;
-    private String token;
 }

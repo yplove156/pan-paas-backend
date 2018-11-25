@@ -54,8 +54,9 @@ public class TokenUtil {
             JWTVerifier verifier = JWT.require(algorithm).withIssuer(ISSUER).build();
             DecodedJWT jwt = verifier.verify(token);
             Map<String, Claim> map = jwt.getClaims();
-            Map<String, String> resultMap = new HashMap<>(4);
+            Map<String, String> resultMap = new HashMap<>();
             map.forEach((k, v) -> resultMap.put(k, v.asString()));
+            resultMap.put("expireTime", jwt.getExpiresAt().getTime() + "");
             return resultMap;
         } catch (Exception e) {
             return null;

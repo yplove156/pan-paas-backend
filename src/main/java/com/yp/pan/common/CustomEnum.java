@@ -19,6 +19,8 @@ public enum CustomEnum {
 
     USER_NOT_EXIST("USER_NOT_EXIST", "用户不存在"),
 
+    ADD_USER_ERROR("ADD_USER_ERROR", "添加成员失败"),
+
     NAMESPACE_CREATE_ERROR("NAMESPACE_CREATE_ERROR", "命名空间创建失败"),
 
     NAMESPACE_DELETE_ERROR("NAMESPACE_DELETE_ERROR", "命名空间删除失败"),

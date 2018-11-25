@@ -2,6 +2,7 @@ package com.yp.pan.mapper;
 
 import com.yp.pan.model.PwdInfo;
 import com.yp.pan.provider.PwdProvider;
+import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.SelectProvider;
@@ -21,4 +22,7 @@ public interface PwdMapper {
             @Result(column = "delete_flag", property = "deleteFlag")
     })
     PwdInfo findByUsername(String username);
+
+    @InsertProvider(type = PwdProvider.class, method = "addPwd")
+    int addPwd(PwdInfo pwdInfo);
 }

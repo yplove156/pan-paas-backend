@@ -8,6 +8,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -37,6 +38,12 @@ public class CustomInterceptor implements HandlerInterceptor {
         Map<String, String> datas = TokenUtil.decodeToken(token);
         if (datas == null) {
             String res = JSONObject.toJSONString(ResponseEntity.getFail(CustomEnum.COMMON_EXCEPTION.getCode(), CustomEnum.COMMON_EXCEPTION.getMsg()));
+            response.getWriter().write(res);
+            return false;
+        }
+        Long expireTime = Long.parseLong(datas.get("expireTime"));
+        if (expireTime < System.currentTimeMillis()) {
+            String res = JSONObject.toJSONString(ResponseEntity.getFail(CustomEnum.AUTH_FAILD.getCode(), CustomEnum.AUTH_FAILD.getMsg()));
             response.getWriter().write(res);
             return false;
         }

@@ -18,4 +18,6 @@ public interface PwdService {
      * @return
      */
     PwdInfo findByUsername(String username);
+
+    int addPwd(PwdInfo pwdInfo) throws Exception;
 }

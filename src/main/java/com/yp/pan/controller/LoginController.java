@@ -61,6 +61,9 @@ public class LoginController {
             userInfoDto.setNick(userInfo.getNick());
             userInfoDto.setPhoto(userInfo.getPhoto());
             userInfoDto.setRole(userInfo.getRole());
+            userInfoDto.setName(userInfo.getName());
+            userInfoDto.setPhone(userInfo.getPhone());
+            userInfoDto.setPosition(userInfo.getPosition());
             userInfoDto.setToken(token);
             return userInfoDto;
         }

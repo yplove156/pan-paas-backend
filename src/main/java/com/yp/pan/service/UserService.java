@@ -2,6 +2,8 @@ package com.yp.pan.service;
 
 import com.yp.pan.model.UserInfo;
 
+import java.util.List;
+
 /**
  * UserService class
  *
@@ -11,4 +13,8 @@ import com.yp.pan.model.UserInfo;
 public interface UserService {
 
     UserInfo findByUsername(String username) throws Exception;
+
+    List<UserInfo> userList() throws Exception;
+
+    int addUser(UserInfo userInfo) throws Exception;
 }

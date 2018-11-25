@@ -26,4 +26,9 @@ public class PwdServiceImpl implements PwdService {
     public PwdInfo findByUsername(String username) {
         return pwdMapper.findByUsername(username);
     }
+
+    @Override
+    public int addPwd(PwdInfo pwdInfo) throws Exception {
+        return pwdMapper.addPwd(pwdInfo);
+    }
 }

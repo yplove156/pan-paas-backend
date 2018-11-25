@@ -1,5 +1,6 @@
 package com.yp.pan.provider;
 
+import com.yp.pan.model.PwdInfo;
 import org.apache.ibatis.jdbc.SQL;
 
 /**
@@ -21,5 +22,21 @@ public class PwdProvider {
             }
         }.toString();
         return preSql + " limit 1";
+    }
+
+    public String addPwd(PwdInfo pwdInfo) {
+        return new SQL() {
+            {
+                INSERT_INTO("pwd_info");
+                VALUES("id", "#{id}");
+                VALUES("username", "#{username}");
+                VALUES("password", "#{password}");
+                VALUES("salt", "#{salt}");
+                VALUES("state", "#{state}");
+                VALUES("create_time", "#{createTime}");
+                VALUES("update_time", "#{updateTime}");
+                VALUES("delete_flag", "#{deleteFlag}");
+            }
+        }.toString();
     }
 }
