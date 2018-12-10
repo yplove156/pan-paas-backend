@@ -1,22 +1,20 @@
 package com.yp.pan.controller;
 
 import com.yp.pan.common.CustomEnum;
+import com.yp.pan.config.K8sClient;
 import com.yp.pan.dto.NamespaceDto;
+import com.yp.pan.model.ClusterInfo;
+import com.yp.pan.service.ClusterService;
 import com.yp.pan.util.ServerException;
 import io.fabric8.kubernetes.api.model.Namespace;
 import io.fabric8.kubernetes.api.model.ObjectMeta;
-import io.fabric8.kubernetes.client.KubernetesClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import javax.xml.crypto.Data;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * NamespaceController class
@@ -27,18 +25,17 @@ import java.util.List;
 @RestController
 @RequestMapping("/namespaces")
 public class NamespaceController {
-
-    private final KubernetesClient client;
+    private final ClusterService clusterService;
 
     @Autowired
-    public NamespaceController(KubernetesClient client) {
-        this.client = client;
+    public NamespaceController(ClusterService clusterService) {
+        this.clusterService = clusterService;
     }
 
     @GetMapping
     public Object namespaces() throws Exception {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        return client.namespaces().list().getItems().stream().sorted((x, y) -> {
+        return new K8sClient(clusterService).get().namespaces().list().getItems().stream().sorted((x, y) -> {
             try {
                 Long dateX = sdf.parse(x.getMetadata().getCreationTimestamp()).getTime();
                 Long dateY = sdf.parse(y.getMetadata().getCreationTimestamp()).getTime();
@@ -63,7 +60,7 @@ public class NamespaceController {
         namespace.setMetadata(namespaceOM);
         Namespace replaceOrNew;
         try {
-            replaceOrNew = client.namespaces().createOrReplace(namespace);
+            replaceOrNew = new K8sClient(clusterService).get().namespaces().createOrReplace(namespace);
             if (replaceOrNew != null) {
                 return replaceOrNew;
             }
@@ -79,7 +76,7 @@ public class NamespaceController {
         if (StringUtils.isEmpty(name)) {
             throw new ServerException(CustomEnum.NAMESPACE_DELETE_ERROR);
         }
-        Boolean delete = client.namespaces().withName(name).delete();
+        Boolean delete = new K8sClient(clusterService).get().namespaces().withName(name).delete();
         if (delete) {
             return name;
         }
@@ -91,8 +88,8 @@ public class NamespaceController {
 //        if (StringUtils.isEmpty(name) || StringUtils.isEmpty(newName)) {
 //            throw new ServerException(CustomEnum.NAMESPACE_EDIT_ERROR);
 //        }
-//        Namespace namespace = client.namespaces().withName(name).get();
+//        Namespace namespace = new K8sClient().get().namespaces().withName(name).get();
 //        namespace.getMetadata().setName(newName);
-//        return client.namespaces().withName(name).createOrReplace(namespace);
+//        return new K8sClient().get().namespaces().withName(name).createOrReplace(namespace);
 //    }
 }

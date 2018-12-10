@@ -1,9 +1,9 @@
 package com.yp.pan.controller;
 
 import com.yp.pan.common.CustomEnum;
+import com.yp.pan.config.K8sClient;
+import com.yp.pan.service.ClusterService;
 import com.yp.pan.util.ServerException;
-import io.fabric8.kubernetes.api.model.Node;
-import io.fabric8.kubernetes.client.KubernetesClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,16 +20,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/nodes")
 public class NodeController {
-    private final KubernetesClient client;
+
+    private final ClusterService clusterService;
 
     @Autowired
-    public NodeController(KubernetesClient client) {
-        this.client = client;
+    public NodeController(ClusterService clusterService) {
+        this.clusterService = clusterService;
     }
 
     @GetMapping
     public Object getNodes() throws Exception {
-        return client.nodes().list().getItems();
+        return new K8sClient(clusterService).get().nodes().list().getItems();
     }
 
     @GetMapping("/{name}")
@@ -37,6 +38,6 @@ public class NodeController {
         if (StringUtils.isEmpty(name)) {
             throw new ServerException(CustomEnum.NODE_DETAIL_ERROR);
         }
-        return client.nodes().withName(name).get();
+        return new K8sClient(clusterService).get().nodes().withName(name).get();
     }
 }

@@ -1,12 +1,17 @@
 package com.yp.pan.config;
 
+import com.yp.pan.model.ClusterInfo;
+import com.yp.pan.service.ClusterService;
+import com.yp.pan.serviceimpl.ClusterServiceImpl;
 import io.fabric8.kubernetes.client.Config;
 import io.fabric8.kubernetes.client.ConfigBuilder;
 import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 /**
  * K8sClient class
@@ -14,14 +19,29 @@ import org.springframework.context.annotation.Configuration;
  * @author Administrator
  * @date 2018/11/18
  */
-@Configuration
+@Component
 public class K8sClient {
-    @Value("${k8s.url}")
-    private String url;
 
-    @Bean
-    public KubernetesClient kubernetesClient() {
-        Config config = new ConfigBuilder().withMasterUrl(url).build();
+    private final ClusterService clusterService;
+
+    @Autowired
+    public K8sClient(ClusterService clusterService) {
+        this.clusterService = clusterService;
+    }
+
+    public KubernetesClient get() {
+        ClusterInfo clusterInfo;
+        try {
+            clusterInfo = clusterService.getCluster();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        Config config = new ConfigBuilder().withMasterUrl(clusterInfo.getUrl())
+                .withCaCertData(clusterInfo.getCaCertData())
+                .withClientCertData(clusterInfo.getClientCertData())
+                .withClientKeyData(clusterInfo.getClientKeyData())
+                .build();
         return new DefaultKubernetesClient(config);
     }
 }

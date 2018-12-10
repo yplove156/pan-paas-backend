@@ -7,11 +7,8 @@ package com.yp.pan.common;
  * @date 2018/07/16
  */
 public enum CustomEnum {
-    /**
-     * 正常返回数据
-     */
-//    COMMON_SUCCESS("0", ""),
-    AUTH_FAILD("AUTH_FAILED", "用户认证失败"),
+
+    AUTH_FAILED("AUTH_FAILED", "用户认证失败"),
 
     USERNAME_PASSWORD_EMPTY("USERNAME_PASSWORD_EMPTY", "用户名或密码为空"),
 
@@ -28,6 +25,8 @@ public enum CustomEnum {
 //    NAMESPACE_EDIT_ERROR("NAMESPACE_EDIT_ERROR", "命名空间编辑失败"),
 
     NODE_DETAIL_ERROR("NODE_DETAIL_ERROR", "获取节点详情失败"),
+
+    ADD_CLUSTER_ERROR("ADD_CLUSTER_ERROR", "添加集群信息失败"),
 
     /**
      * 出现未知异常

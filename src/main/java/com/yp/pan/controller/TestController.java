@@ -1,5 +1,6 @@
 package com.yp.pan.controller;
 
+import com.sun.jndi.ldap.pool.PooledConnectionFactory;
 import com.yp.pan.config.K8sClient;
 import com.yp.pan.util.UUIDUtil;
 import io.fabric8.kubernetes.api.model.Namespace;
@@ -7,9 +8,15 @@ import io.fabric8.kubernetes.api.model.ObjectMeta;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.soap.Name;
 import java.util.HashMap;
 import java.util.List;
@@ -20,19 +27,10 @@ import java.util.List;
 @RestController
 public class TestController {
 
-    @Autowired
-    KubernetesClient client;
-
     @RequestMapping("/test")
-    public Object test() {
-        ObjectMeta meta = new ObjectMeta();
-        HashMap<String, String> map = new HashMap<>(1);
-        map.put("desc", "而是热热身他");
-        meta.setAnnotations(map);
-        meta.setName("niubi");
-        Namespace namespace = new Namespace();
-        namespace.setMetadata(meta);
-        Namespace orReplace = client.namespaces().createOrReplace(namespace);
-        return orReplace;
+    public Object test(HttpServletRequest request) {
+//        NodeMe
+//        client.secrets().createOrReplace()
+        return null;
     }
 }
