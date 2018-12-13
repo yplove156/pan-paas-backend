@@ -27,6 +27,8 @@ public enum CustomEnum {
     NODE_DETAIL_ERROR("NODE_DETAIL_ERROR", "获取节点详情失败"),
 
     ADD_CLUSTER_ERROR("ADD_CLUSTER_ERROR", "添加集群信息失败"),
+    DELETE_CLUSTER_ERROR("DELETE_CLUSTER_ERROR", "删除集群信息失败"),
+    EDIT_CLUSTER_ERROR("EDIT_CLUSTER_ERROR", "修改集群信息失败"),
 
     /**
      * 出现未知异常

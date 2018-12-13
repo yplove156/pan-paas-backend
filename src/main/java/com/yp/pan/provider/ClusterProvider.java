@@ -1,5 +1,6 @@
 package com.yp.pan.provider;
 
+import com.yp.pan.dto.ClusterInfoDto;
 import com.yp.pan.model.ClusterInfo;
 import org.apache.ibatis.jdbc.SQL;
 
@@ -43,6 +44,40 @@ public class ClusterProvider {
             {
                 UPDATE("cluster_info");
                 SET("delete_flag=1");
+                WHERE("id=#{id}", "delete_flag=0");
+            }
+        }.toString();
+    }
+
+    public String closeOpen() {
+        return new SQL() {
+            {
+                UPDATE("cluster_info");
+                SET("open=0");
+            }
+        }.toString();
+    }
+
+    public String clusterList() {
+        return new SQL() {
+            {
+                SELECT("id", "url", "ca_cert_data", "client_cert_data", "client_key_data", "open", "create_time", "update_time", "delete_flag");
+                FROM("cluster_info");
+                WHERE("delete_flag=0");
+            }
+        }.toString();
+    }
+
+    public String updateCluster(ClusterInfoDto clusterInfoDto) {
+        return new SQL() {
+            {
+                UPDATE("cluster_info");
+                SET("url=#{url}");
+                SET("ca_cert_data=#{caCertData}");
+                SET("client_cert_data=#{clientCertData}");
+                SET("client_key_data=#{clientKeyData}");
+                SET("open=#{open}");
+                SET("update_time=#{createTime}");
                 WHERE("id=#{id}", "delete_flag=0");
             }
         }.toString();
