@@ -25,29 +25,29 @@ public class CustomInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-//        String url = request.getRequestURI();
-//        if (LOGIN_URL.equals(url)) {
-//            return true;
-//        }
-//        String token = request.getHeader("pan-tk");
-//        if (StringUtils.isEmpty(token) || NULL_STR.equals(token)) {
-//            String res = JSONObject.toJSONString(ResponseEntity.getFail(CustomEnum.AUTH_FAILED.getCode(), CustomEnum.AUTH_FAILED.getMsg()));
-//            response.getWriter().write(res);
-//            return false;
-//        }
-//        Map<String, String> datas = TokenUtil.decodeToken(token);
-//        if (datas == null) {
-//            String res = JSONObject.toJSONString(ResponseEntity.getFail(CustomEnum.AUTH_FAILED.getCode(), CustomEnum.AUTH_FAILED.getMsg()));
-//            response.getWriter().write(res);
-//            return false;
-//        }
-//        Long expireTime = Long.parseLong(datas.get("expireTime"));
-//        if (expireTime < System.currentTimeMillis()) {
-//            String res = JSONObject.toJSONString(ResponseEntity.getFail(CustomEnum.AUTH_FAILED.getCode(), CustomEnum.AUTH_FAILED.getMsg()));
-//            response.getWriter().write(res);
-//            return false;
-//        }
-//        datas.forEach(request::setAttribute);
+        String url = request.getRequestURI();
+        if (LOGIN_URL.equals(url)) {
+            return true;
+        }
+        String token = request.getHeader("pan-tk");
+        if (StringUtils.isEmpty(token) || NULL_STR.equals(token)) {
+            String res = JSONObject.toJSONString(ResponseEntity.getFail(CustomEnum.AUTH_FAILED.getCode(), CustomEnum.AUTH_FAILED.getMsg()));
+            response.getWriter().write(res);
+            return false;
+        }
+        Map<String, String> datas = TokenUtil.decodeToken(token);
+        if (datas == null) {
+            String res = JSONObject.toJSONString(ResponseEntity.getFail(CustomEnum.AUTH_FAILED.getCode(), CustomEnum.AUTH_FAILED.getMsg()));
+            response.getWriter().write(res);
+            return false;
+        }
+        Long expireTime = Long.parseLong(datas.get("expireTime"));
+        if (expireTime < System.currentTimeMillis()) {
+            String res = JSONObject.toJSONString(ResponseEntity.getFail(CustomEnum.AUTH_FAILED.getCode(), CustomEnum.AUTH_FAILED.getMsg()));
+            response.getWriter().write(res);
+            return false;
+        }
+        datas.forEach(request::setAttribute);
         return true;
     }
 }
