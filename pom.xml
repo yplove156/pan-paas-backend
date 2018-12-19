@@ -83,15 +83,15 @@
         <dependency>
             <groupId>io.fabric8</groupId>
             <artifactId>kubernetes-client</artifactId>
-            <version>4.1.0</version>
+            <version>4.1.1</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/io.fabric8/kubernetes-api -->
-        <dependency>
-            <groupId>io.fabric8</groupId>
-            <artifactId>kubernetes-api</artifactId>
-            <version>3.0.12</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>io.fabric8</groupId>-->
+            <!--<artifactId>kubernetes-api</artifactId>-->
+            <!--<version>3.0.12</version>-->
+        <!--</dependency>-->
 
         <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
         <dependency>

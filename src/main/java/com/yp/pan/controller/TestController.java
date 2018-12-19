@@ -2,9 +2,11 @@ package com.yp.pan.controller;
 
 import com.sun.jndi.ldap.pool.PooledConnectionFactory;
 import com.yp.pan.config.K8sClient;
+import com.yp.pan.service.ClusterService;
 import com.yp.pan.util.UUIDUtil;
 import io.fabric8.kubernetes.api.model.Namespace;
 import io.fabric8.kubernetes.api.model.ObjectMeta;
+import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +28,12 @@ import java.util.List;
  */
 @RestController
 public class TestController {
+    @Autowired
+    ClusterService clusterService;
 
     @RequestMapping("/test")
     public Object test(HttpServletRequest request) {
 //        NodeMe
-        return null;
+        return new K8sClient(clusterService).get().namespaces().list(2, "eyJ2IjoibWV0YS5rOHMuaW8vdjEiLCJydiI6MjA0MTgwOSwic3RhcnQiOiJrdWJlLXB1YmxpY1x1MDAwMCJ9");
     }
 }

@@ -20,9 +20,11 @@ public class ApplicationProvider {
                 VALUES("id", "#{id}");
                 VALUES("name", "#{name}");
                 VALUES("type", "#{type}");
+                VALUES("version", "#{version}");
                 VALUES("description", "#{description}");
                 VALUES("image", "#{image}");
                 VALUES("photo", "#{photo}");
+                VALUES("level", "#{level}");
                 VALUES("open", "#{open}");
                 VALUES("user_id", "#{userId}");
                 VALUES("create_time", "#{createTime}");
@@ -52,20 +54,20 @@ public class ApplicationProvider {
         }.toString();
     }
 
-    public String openAppList(Map<String,Object> params) {
+    public String openAppList(Map<String, Object> params) {
         return new SQL() {
             {
-                SELECT("id", "name", "type", "description", "image", "photo", "open", "user_id", "create_time");
+                SELECT("id", "name", "type", "version", "description", "image", "photo", "open", "level", "user_id", "create_time");
                 FROM("app_info");
                 WHERE("open=1", "delete_flag=0");
             }
         }.toString() + "limit #{start},#{limit}";
     }
 
-    public String userAppList(Map<String,Object> params) {
+    public String userAppList(Map<String, Object> params) {
         return new SQL() {
             {
-                SELECT("id", "name", "type", "description", "image", "photo", "open", "user_id", "create_time");
+                SELECT("id", "name", "type", "version", "description", "image", "photo", "open", "level", "user_id", "create_time");
                 FROM("app_info");
                 WHERE("user_id=#{userId}", "delete_flag=0");
             }
