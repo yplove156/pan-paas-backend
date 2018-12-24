@@ -13,9 +13,9 @@ import java.util.List;
  */
 public interface ClusterService {
 
-    ClusterInfo getCluster() throws Exception;
+    ClusterInfo getCluster();
 
-    int addCluster(ClusterInfo clusterInfo) throws Exception;
+    int addCluster(ClusterInfo clusterInfo);
 
     int deleteClusterById(String id);
 

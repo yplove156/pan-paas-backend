@@ -28,7 +28,7 @@ public class PwdServiceImpl implements PwdService {
     }
 
     @Override
-    public int addPwd(PwdInfo pwdInfo) throws Exception {
+    public int addPwd(PwdInfo pwdInfo) {
         return pwdMapper.addPwd(pwdInfo);
     }
 }

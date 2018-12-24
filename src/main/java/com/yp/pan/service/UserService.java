@@ -12,9 +12,9 @@ import java.util.List;
  */
 public interface UserService {
 
-    UserInfo findByUsername(String username) throws Exception;
+    UserInfo findByUsername(String username);
 
-    List<UserInfo> userList() throws Exception;
+    List<UserInfo> userList();
 
-    int addUser(UserInfo userInfo) throws Exception;
+    int addUser(UserInfo userInfo);
 }

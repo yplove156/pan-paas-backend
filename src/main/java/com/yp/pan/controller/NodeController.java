@@ -29,12 +29,12 @@ public class NodeController {
     }
 
     @GetMapping
-    public Object getNodes() throws Exception {
+    public Object getNodes() {
         return new K8sClient(clusterService).get().nodes().list().getItems();
     }
 
     @GetMapping("/{name}")
-    public Object getDetail(@PathVariable String name) throws Exception {
+    public Object getDetail(@PathVariable String name) {
         if (StringUtils.isEmpty(name)) {
             throw new ServerException(CustomEnum.NODE_DETAIL_ERROR);
         }

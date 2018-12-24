@@ -26,12 +26,12 @@ public class ClusterServiceImpl implements ClusterService {
     }
 
     @Override
-    public ClusterInfo getCluster() throws Exception {
+    public ClusterInfo getCluster() {
         return clusterMapper.getCluster();
     }
 
     @Override
-    public int addCluster(ClusterInfo clusterInfo) throws Exception {
+    public int addCluster(ClusterInfo clusterInfo) {
         if (clusterInfo.getOpen() == 1) {
             clusterMapper.closeOpen();
         }

@@ -59,4 +59,9 @@ public class ApplicationServiceImpl implements ApplicationService {
         params.put("limit", limit);
         return applicationMapper.userAppList(params);
     }
+
+    @Override
+    public int deleteApp(String id) {
+        return applicationMapper.deleteApp(id);
+    }
 }

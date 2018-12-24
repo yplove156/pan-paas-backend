@@ -24,7 +24,7 @@ public interface ApplicationMapper {
             @Result(column = "user_id", property = "userId"),
             @Result(column = "create_time", property = "createTime")
     })
-    List<ApplicationDto> openAppList(Map<String,Object> params);
+    List<ApplicationDto> openAppList(Map<String, Object> params);
 
     @SelectProvider(type = ApplicationProvider.class, method = "openAppNo")
     int openAppNo();
@@ -37,5 +37,8 @@ public interface ApplicationMapper {
             @Result(column = "user_id", property = "userId"),
             @Result(column = "create_time", property = "createTime")
     })
-    List<ApplicationDto> userAppList(Map<String,Object> params);
+    List<ApplicationDto> userAppList(Map<String, Object> params);
+
+    @UpdateProvider(type = ApplicationProvider.class, method = "deleteApp")
+    int deleteApp(String id);
 }

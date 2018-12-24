@@ -49,7 +49,7 @@ public class ClusterController {
     }
 
     @PostMapping
-    public Object updateCluster(@RequestBody ClusterInfoDto clusterInfoDto) throws Exception {
+    public Object updateCluster(@RequestBody ClusterInfoDto clusterInfoDto) {
         clusterInfoDto.setCreateTime(System.currentTimeMillis());
         int res = clusterService.updateCluster(clusterInfoDto);
         if (res == 1) {
@@ -71,7 +71,7 @@ public class ClusterController {
     }
 
     @GetMapping
-    public Object clusterList() throws Exception {
+    public Object clusterList() {
         List<ClusterInfoDto> clusterInfoDtos = new ArrayList<>();
         List<ClusterInfo> clusterInfos = clusterService.clusterList();
         clusterInfos.forEach(clusterInfo -> {

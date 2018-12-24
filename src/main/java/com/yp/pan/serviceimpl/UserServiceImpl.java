@@ -26,17 +26,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserInfo findByUsername(String username) throws Exception {
+    public UserInfo findByUsername(String username) {
         return userMapper.findByUsername(username);
     }
 
     @Override
-    public List<UserInfo> userList() throws Exception {
+    public List<UserInfo> userList() {
         return userMapper.userList();
     }
 
     @Override
-    public int addUser(UserInfo userInfo) throws Exception {
+    public int addUser(UserInfo userInfo) {
         return userMapper.addUser(userInfo);
     }
 }

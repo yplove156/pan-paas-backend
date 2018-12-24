@@ -30,6 +30,7 @@ public enum CustomEnum {
     DELETE_CLUSTER_ERROR("DELETE_CLUSTER_ERROR", "删除集群信息失败"),
     EDIT_CLUSTER_ERROR("EDIT_CLUSTER_ERROR", "修改集群信息失败"),
     ADD_APPLICATION_ERROR("ADD_APPLICATION_ERROR", "添加应用信息失败"),
+    DELETE_APPLICATION_ERROR("DELETE_APPLICATION_ERROR", "删除应用信息失败"),
 
     /**
      * 出现未知异常

@@ -19,5 +19,5 @@ public interface PwdService {
      */
     PwdInfo findByUsername(String username);
 
-    int addPwd(PwdInfo pwdInfo) throws Exception;
+    int addPwd(PwdInfo pwdInfo);
 }

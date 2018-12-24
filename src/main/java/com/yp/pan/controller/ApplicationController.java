@@ -7,6 +7,7 @@ import com.yp.pan.service.ApplicationService;
 import com.yp.pan.util.Page;
 import com.yp.pan.util.ServerException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ public class ApplicationController {
     }
 
     @PutMapping
-    public Object addApplication(@RequestBody ApplicationInfo applicationInfo, @RequestAttribute String userId) throws Exception {
+    public Object addApplication(@RequestBody ApplicationInfo applicationInfo, @RequestAttribute String userId) {
         applicationInfo.setId(UUID.randomUUID().toString());
         applicationInfo.setUserId(userId);
         applicationInfo.setCreateTime(System.currentTimeMillis());
@@ -45,7 +46,7 @@ public class ApplicationController {
     }
 
     @GetMapping("/{page}")
-    public Object openAppList(@PathVariable Integer page) throws Exception {
+    public Object openAppList(@PathVariable Integer page) {
         if (page == null || page < 1) {
             page = 1;
         }
@@ -63,7 +64,7 @@ public class ApplicationController {
     }
 
     @GetMapping("/user/{page}")
-    public Object openAppList(@RequestAttribute String userId, @PathVariable Integer page) throws Exception {
+    public Object openAppList(@RequestAttribute String userId, @PathVariable Integer page) {
         if (page == null || page < 1) {
             page = 1;
         }
@@ -78,5 +79,17 @@ public class ApplicationController {
         List<ApplicationDto> list = applicationService.userAppList(userId, start, limit);
         return new Page<ApplicationDto>(page, limit, totalPage, total, list) {
         };
+    }
+
+    @DeleteMapping("/{id}")
+    public Object deleteApp(@PathVariable String id) {
+        if (StringUtils.isEmpty(id)) {
+            throw new ServerException(CustomEnum.DELETE_APPLICATION_ERROR);
+        }
+        int res = applicationService.deleteApp(id);
+        if (res == 1) {
+            return id;
+        }
+        throw new ServerException(CustomEnum.DELETE_APPLICATION_ERROR);
     }
 }

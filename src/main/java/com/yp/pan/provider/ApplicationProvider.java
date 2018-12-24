@@ -73,4 +73,14 @@ public class ApplicationProvider {
             }
         }.toString() + "limit #{start},#{limit}";
     }
+
+    public String deleteApp(String id) {
+        return new SQL() {
+            {
+                UPDATE("app_info");
+                SET("delete_flag=1");
+                WHERE("id=#{id}", "delete_flag=0");
+            }
+        }.toString();
+    }
 }
