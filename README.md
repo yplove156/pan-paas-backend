@@ -20,7 +20,7 @@ pan-paas 是一个通用的、基于 Web 的 **[Kubernetes](https://kubernetes.i
 整体采用前后端分离的方案，其中前端采用 Vue全家桶 框架进行数据交互和展示。后端采用 SpringBoot 框架做数据接口处理，
 使用 fabric8 与 Kubernetes 进行交互，数据使用 MySQL 存储。
 
-![Dashboard UI workloads page](https://raw.githubusercontent.com/wiki/Qihoo360/wayne/image/architecture.png)
+![Dashboard UI workloads page](https://github.com/yplove156/kubernetes/blob/master/1.jpg)
 
 ## 项目依赖
 
