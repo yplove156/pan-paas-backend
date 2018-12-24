@@ -116,7 +116,18 @@ public class ApplicationController {
             @RequestBody ApplicationInfo applicationInfo,
             @RequestAttribute String userId,
             @RequestAttribute String role) {
-
-        return null;
+        ApplicationInfo info = applicationService.getById(applicationInfo.getId());
+        if (info == null) {
+            throw new ServerException(CustomEnum.UPDATE_APPLICATION_ERROR);
+        }
+        if (RoleEnum.ADMIN.getRole().equals(role)) {
+            applicationService.update(applicationInfo);
+        }
+        if (userId.equals(info.getUserId())) {
+            applicationService.update(applicationInfo);
+        } else {
+            throw new ServerException(CustomEnum.NO_PERMISSION);
+        }
+        return applicationInfo.getId();
     }
 }
