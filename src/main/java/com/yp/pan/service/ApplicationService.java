@@ -24,4 +24,8 @@ public interface ApplicationService {
     List<ApplicationDto> userAppList(String userId, int start, int limit);
 
     int deleteApp(String id);
+
+    int update(ApplicationInfo applicationInfo);
+
+    ApplicationInfo getById(String id);
 }

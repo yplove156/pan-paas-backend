@@ -64,4 +64,14 @@ public class ApplicationServiceImpl implements ApplicationService {
     public int deleteApp(String id) {
         return applicationMapper.deleteApp(id);
     }
+
+    @Override
+    public int update(ApplicationInfo applicationInfo) {
+        return applicationMapper.update(applicationInfo);
+    }
+
+    @Override
+    public ApplicationInfo getById(String id) {
+        return applicationMapper.getById(id);
+    }
 }

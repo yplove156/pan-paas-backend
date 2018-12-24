@@ -9,6 +9,7 @@ package com.yp.pan.common;
 public enum CustomEnum {
 
     AUTH_FAILED("AUTH_FAILED", "用户认证失败"),
+    NO_PERMISSION("NO_PERMISSION", "您无权执行此操作"),
 
     USERNAME_PASSWORD_EMPTY("USERNAME_PASSWORD_EMPTY", "用户名或密码为空"),
 

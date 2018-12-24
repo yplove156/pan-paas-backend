@@ -74,11 +74,66 @@ public class ApplicationProvider {
         }.toString() + "limit #{start},#{limit}";
     }
 
+    public String getById(String id){
+        return new SQL(){
+            {
+                SELECT("id", "name", "type", "version", "description", "image", "photo", "open", "level", "user_id", "create_time");
+                FROM("app_info");
+                WHERE("id=#{id}", "delete_flag=0");
+            }
+        }.toString();
+    }
+
     public String deleteApp(String id) {
         return new SQL() {
             {
                 UPDATE("app_info");
                 SET("delete_flag=1");
+                WHERE("id=#{id}", "delete_flag=0");
+            }
+        }.toString();
+    }
+
+    public String update(ApplicationInfo applicationInfo) {
+        return new SQL() {
+            {
+                UPDATE("app_info");
+                if (null != applicationInfo.getName()) {
+                    SET("name=#{name}");
+                }
+                if (null != applicationInfo.getType()) {
+                    SET("type=#{type}");
+                }
+                if (null != applicationInfo.getVersion()) {
+                    SET("version=#{version}");
+                }
+                if (null != applicationInfo.getDescription()) {
+                    SET("description=#{description}");
+                }
+                if (null != applicationInfo.getImage()) {
+                    SET("image=#{image}");
+                }
+                if (null != applicationInfo.getPhoto()) {
+                    SET("photo=#{photo}");
+                }
+                if (null != applicationInfo.getOpen()) {
+                    SET("open=#{open}");
+                }
+                if (null != applicationInfo.getLevel()) {
+                    SET("level=#{level}");
+                }
+                if (null != applicationInfo.getUserId()) {
+                    SET("user_id=#{userId}");
+                }
+                if (null != applicationInfo.getCreateTime()) {
+                    SET("create_time=#{createTime}");
+                }
+                if (null != applicationInfo.getUpdateTime()) {
+                    SET("update_time=#{updateTime}");
+                }
+                if (null != applicationInfo.getDeleteFlag()) {
+                    SET("delete_flag=#{deleteFlag}");
+                }
                 WHERE("id=#{id}", "delete_flag=0");
             }
         }.toString();

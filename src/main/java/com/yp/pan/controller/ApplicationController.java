@@ -1,6 +1,7 @@
 package com.yp.pan.controller;
 
 import com.yp.pan.common.CustomEnum;
+import com.yp.pan.common.RoleEnum;
 import com.yp.pan.dto.ApplicationDto;
 import com.yp.pan.model.ApplicationInfo;
 import com.yp.pan.service.ApplicationService;
@@ -32,7 +33,9 @@ public class ApplicationController {
     }
 
     @PutMapping
-    public Object addApplication(@RequestBody ApplicationInfo applicationInfo, @RequestAttribute String userId) {
+    public Object addApplication(
+            @RequestBody ApplicationInfo applicationInfo,
+            @RequestAttribute String userId) {
         applicationInfo.setId(UUID.randomUUID().toString());
         applicationInfo.setUserId(userId);
         applicationInfo.setCreateTime(System.currentTimeMillis());
@@ -82,14 +85,38 @@ public class ApplicationController {
     }
 
     @DeleteMapping("/{id}")
-    public Object deleteApp(@PathVariable String id) {
+    public Object deleteApp(
+            @PathVariable String id,
+            @RequestAttribute String userId,
+            @RequestAttribute String role) {
         if (StringUtils.isEmpty(id)) {
             throw new ServerException(CustomEnum.DELETE_APPLICATION_ERROR);
         }
-        int res = applicationService.deleteApp(id);
+        ApplicationInfo applicationInfo = applicationService.getById(id);
+        int res = 0;
+        if (RoleEnum.ADMIN.getRole().equals(role)) {
+            res = applicationService.deleteApp(id);
+            if (res == 1) {
+                return id;
+            }
+            throw new ServerException(CustomEnum.DELETE_APPLICATION_ERROR);
+        }
+        if (applicationInfo == null || !userId.equals(applicationInfo.getUserId())) {
+            throw new ServerException(CustomEnum.NO_PERMISSION);
+        }
+        res = applicationService.deleteApp(id);
         if (res == 1) {
             return id;
         }
         throw new ServerException(CustomEnum.DELETE_APPLICATION_ERROR);
+    }
+
+    @PostMapping
+    public Object updateApp(
+            @RequestBody ApplicationInfo applicationInfo,
+            @RequestAttribute String userId,
+            @RequestAttribute String role) {
+
+        return null;
     }
 }

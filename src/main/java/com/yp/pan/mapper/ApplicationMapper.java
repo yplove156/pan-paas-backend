@@ -41,4 +41,10 @@ public interface ApplicationMapper {
 
     @UpdateProvider(type = ApplicationProvider.class, method = "deleteApp")
     int deleteApp(String id);
+
+    @UpdateProvider(type = ApplicationProvider.class, method = "update")
+    int update(ApplicationInfo applicationInfo);
+
+    @SelectProvider(type = ApplicationProvider.class,method = "getById")
+    ApplicationInfo getById(String id);
 }
