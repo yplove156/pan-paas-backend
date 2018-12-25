@@ -38,7 +38,7 @@ public class LoginController {
 
     @RequireRole("admin")
     @PostMapping("/login")
-    public Object login(@RequestBody LoginDto loginDto) throws Exception {
+    public Object login(@RequestBody LoginDto loginDto) {
         if (StringUtils.isEmpty(loginDto.getUsername()) || StringUtils.isEmpty(loginDto.getPassword())) {
             throw new ServerException(CustomEnum.USERNAME_PASSWORD_EMPTY);
         }
@@ -53,7 +53,7 @@ public class LoginController {
         if (encryptPwd.equals(pwdInfo.getPassword())) {
             UserInfo userInfo = userService.findByUsername(loginDto.getUsername());
             if (userInfo == null) {
-                throw new ServerException(CustomEnum.USER_NOT_EXIST);
+                throw new ServerException(CustomEnum.USERNAME_PASSWORD_ERROR);
             }
             String token = TokenUtil.getToken(userInfo);
             UserInfoDto userInfoDto = new UserInfoDto();

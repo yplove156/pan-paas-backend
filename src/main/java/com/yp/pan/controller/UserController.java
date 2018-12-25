@@ -39,7 +39,7 @@ public class UserController {
 
     @PutMapping
     @RequireRole("admin")
-    public Object addUser(@RequestBody CreateUserDto userDto) throws Exception {
+    public Object addUser(@RequestBody CreateUserDto userDto) {
         String salt = UUIDUtil.getUUID(12);
         String encryptPwd = EncryptUtil.encryptPwd(userDto.getPassword(), salt);
         PwdInfo pwdInfo = new PwdInfo();
@@ -73,7 +73,7 @@ public class UserController {
 
     @GetMapping
     @RequireRole("admin")
-    public Object userList() throws Exception {
+    public Object userList() {
         List<UserInfo> userInfos = userService.userList();
         List<UserInfoDto> userInfoDtos = new ArrayList<>();
         userInfos.forEach(userInfo -> {

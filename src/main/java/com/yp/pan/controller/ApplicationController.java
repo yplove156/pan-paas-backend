@@ -122,6 +122,7 @@ public class ApplicationController {
         }
         if (RoleEnum.ADMIN.getRole().equals(role)) {
             applicationService.update(applicationInfo);
+            return applicationInfo.getId();
         }
         if (userId.equals(info.getUserId())) {
             applicationService.update(applicationInfo);

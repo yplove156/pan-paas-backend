@@ -78,7 +78,6 @@ public class NamespaceController {
             }
             throw new ServerException(CustomEnum.NAMESPACE_CREATE_ERROR);
         } catch (Exception e) {
-            e.printStackTrace();
             throw new ServerException(CustomEnum.NAMESPACE_CREATE_ERROR);
         }
     }
