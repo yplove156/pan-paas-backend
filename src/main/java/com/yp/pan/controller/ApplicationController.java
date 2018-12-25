@@ -1,5 +1,6 @@
 package com.yp.pan.controller;
 
+import com.yp.pan.annotation.PanLog;
 import com.yp.pan.common.CustomEnum;
 import com.yp.pan.common.RoleEnum;
 import com.yp.pan.dto.ApplicationDto;
@@ -49,6 +50,7 @@ public class ApplicationController {
     }
 
     @GetMapping("/{page}")
+    @PanLog("666")
     public Object openAppList(@PathVariable Integer page) {
         if (page == null || page < 1) {
             page = 1;
