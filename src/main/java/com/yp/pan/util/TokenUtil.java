@@ -38,6 +38,7 @@ public class TokenUtil {
             Date date = new Date(time.plusDays(3).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
             JWTCreator.Builder builder = JWT.create().withIssuer(ISSUER).withExpiresAt(date);
             builder.withClaim("userId", userInfo.getId());
+            builder.withClaim("username", userInfo.getUsername());
             builder.withClaim("role", userInfo.getRole());
             return builder.sign(algorithm);
         } catch (Exception e) {
