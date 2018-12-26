@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.yp.pan.annotation.PanLog;
 import com.yp.pan.common.CustomEnum;
 import com.yp.pan.model.LogInfo;
+import com.yp.pan.service.LogService;
 import com.yp.pan.util.ResponseEntity;
 import com.yp.pan.util.ServerException;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -12,6 +13,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -28,6 +30,9 @@ import java.util.concurrent.CompletableFuture;
 @Component
 @Aspect
 public class CommonAop {
+
+    @Autowired
+    private LogService logService;
 
     @Pointcut("execution(public * com.yp.pan.controller..*.*(..))")
     private void result() {
@@ -71,6 +76,7 @@ public class CommonAop {
         CompletableFuture.runAsync(() -> {
             System.out.println("***********************************");
             System.out.println(JSONObject.toJSON(logInfo));
+            logService.addLog(logInfo);
             System.out.println("----------------------------------");
         });
         return ResponseEntity.getSuccess(res);
