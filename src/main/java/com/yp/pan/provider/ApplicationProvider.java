@@ -60,6 +60,7 @@ public class ApplicationProvider {
                 SELECT("id", "name", "type", "version", "description", "image", "photo", "open", "level", "user_id", "create_time");
                 FROM("app_info");
                 WHERE("open=1", "delete_flag=0");
+                ORDER_BY("create_time desc");
             }
         }.toString() + "limit #{start},#{limit}";
     }
@@ -70,6 +71,7 @@ public class ApplicationProvider {
                 SELECT("id", "name", "type", "version", "description", "image", "photo", "open", "level", "user_id", "create_time");
                 FROM("app_info");
                 WHERE("user_id=#{userId}", "delete_flag=0");
+                ORDER_BY("create_time desc");
             }
         }.toString() + "limit #{start},#{limit}";
     }
