@@ -6,6 +6,10 @@ import com.yp.pan.service.LogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 @Service
 public class LogServiceImpl implements LogService {
@@ -16,5 +20,18 @@ public class LogServiceImpl implements LogService {
     @Override
     public void addLog(LogInfo logInfo) {
         logMapper.addLog(logInfo);
+    }
+
+    @Override
+    public List<LogInfo> logList(int start, int limit) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("start", start);
+        params.put("limit", limit);
+        return logMapper.logList(params);
+    }
+
+    @Override
+    public int countLog() {
+        return logMapper.countLog();
     }
 }
