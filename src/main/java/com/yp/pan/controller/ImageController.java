@@ -52,7 +52,7 @@ public class ImageController {
     }
 
     @GetMapping("/{page}")
-    @PanLog(value = LogCode.GET_OPEN_IMAGES)
+    @PanLog(value = LogCode.GET_PUBLIC_IMAGES)
     public Object openAppList(@PathVariable Integer page) {
         if (page == null || page < 1) {
             page = 1;
