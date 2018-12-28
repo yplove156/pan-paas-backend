@@ -1,6 +1,6 @@
 package com.yp.pan.provider;
 
-import com.yp.pan.model.ApplicationInfo;
+import com.yp.pan.model.ImageInfo;
 import org.apache.ibatis.jdbc.SQL;
 
 import java.util.Map;
@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public class ApplicationProvider {
 
-    public String addApplication(ApplicationInfo applicationInfo) {
+    public String addApplication(ImageInfo imageInfo) {
         return new SQL() {
             {
                 INSERT_INTO("app_info");
@@ -96,44 +96,44 @@ public class ApplicationProvider {
         }.toString();
     }
 
-    public String update(ApplicationInfo applicationInfo) {
+    public String update(ImageInfo imageInfo) {
         return new SQL() {
             {
                 UPDATE("app_info");
-                if (null != applicationInfo.getName()) {
+                if (null != imageInfo.getName()) {
                     SET("name=#{name}");
                 }
-                if (null != applicationInfo.getType()) {
+                if (null != imageInfo.getType()) {
                     SET("type=#{type}");
                 }
-                if (null != applicationInfo.getVersion()) {
+                if (null != imageInfo.getVersion()) {
                     SET("version=#{version}");
                 }
-                if (null != applicationInfo.getDescription()) {
+                if (null != imageInfo.getDescription()) {
                     SET("description=#{description}");
                 }
-                if (null != applicationInfo.getImage()) {
+                if (null != imageInfo.getImage()) {
                     SET("image=#{image}");
                 }
-                if (null != applicationInfo.getPhoto()) {
+                if (null != imageInfo.getPhoto()) {
                     SET("photo=#{photo}");
                 }
-                if (null != applicationInfo.getOpen()) {
+                if (null != imageInfo.getOpen()) {
                     SET("open=#{open}");
                 }
-                if (null != applicationInfo.getLevel()) {
+                if (null != imageInfo.getLevel()) {
                     SET("level=#{level}");
                 }
-                if (null != applicationInfo.getUserId()) {
+                if (null != imageInfo.getUserId()) {
                     SET("user_id=#{userId}");
                 }
-                if (null != applicationInfo.getCreateTime()) {
+                if (null != imageInfo.getCreateTime()) {
                     SET("create_time=#{createTime}");
                 }
-                if (null != applicationInfo.getUpdateTime()) {
+                if (null != imageInfo.getUpdateTime()) {
                     SET("update_time=#{updateTime}");
                 }
-                if (null != applicationInfo.getDeleteFlag()) {
+                if (null != imageInfo.getDeleteFlag()) {
                     SET("delete_flag=#{deleteFlag}");
                 }
                 WHERE("id=#{id}", "delete_flag=0");

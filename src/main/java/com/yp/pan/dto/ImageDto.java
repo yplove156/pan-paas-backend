@@ -1,20 +1,19 @@
-package com.yp.pan.model;
+package com.yp.pan.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Application class
+ * ImageDto class
  *
  * @author Administrator
- * @date 2018/12/13
+ * @date 2018/12/17
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ApplicationInfo {
-
+public class ImageDto {
     private String id;
     private String name;
     private String type;
@@ -26,6 +25,4 @@ public class ApplicationInfo {
     private Integer level;
     private String userId;
     private Long createTime;
-    private Long updateTime;
-    private Integer deleteFlag;
 }

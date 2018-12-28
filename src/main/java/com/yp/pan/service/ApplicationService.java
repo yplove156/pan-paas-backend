@@ -1,7 +1,7 @@
 package com.yp.pan.service;
 
-import com.yp.pan.dto.ApplicationDto;
-import com.yp.pan.model.ApplicationInfo;
+import com.yp.pan.dto.ImageDto;
+import com.yp.pan.model.ImageInfo;
 
 import java.util.List;
 
@@ -13,19 +13,19 @@ import java.util.List;
  */
 public interface ApplicationService {
 
-    int addApplication(ApplicationInfo applicationInfo);
+    int addApplication(ImageInfo imageInfo);
 
     int openAppNo();
 
-    List<ApplicationDto> openAppList(int start, int limit);
+    List<ImageDto> openAppList(int start, int limit);
 
     int userAppNo(String userId);
 
-    List<ApplicationDto> userAppList(String userId, int start, int limit);
+    List<ImageDto> userAppList(String userId, int start, int limit);
 
     int deleteApp(String id);
 
-    int update(ApplicationInfo applicationInfo);
+    int update(ImageInfo imageInfo);
 
-    ApplicationInfo getById(String id);
+    ImageInfo getById(String id);
 }

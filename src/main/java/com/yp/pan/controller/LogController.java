@@ -1,6 +1,5 @@
 package com.yp.pan.controller;
 
-import com.yp.pan.dto.ApplicationDto;
 import com.yp.pan.model.LogInfo;
 import com.yp.pan.service.LogService;
 import com.yp.pan.util.Page;

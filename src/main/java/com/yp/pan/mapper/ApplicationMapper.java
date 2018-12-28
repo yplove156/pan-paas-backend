@@ -1,7 +1,7 @@
 package com.yp.pan.mapper;
 
-import com.yp.pan.dto.ApplicationDto;
-import com.yp.pan.model.ApplicationInfo;
+import com.yp.pan.dto.ImageDto;
+import com.yp.pan.model.ImageInfo;
 import com.yp.pan.provider.ApplicationProvider;
 import org.apache.ibatis.annotations.*;
 
@@ -17,14 +17,14 @@ import java.util.Map;
 public interface ApplicationMapper {
 
     @InsertProvider(type = ApplicationProvider.class, method = "addApplication")
-    int addApplication(ApplicationInfo applicationInfo);
+    int addApplication(ImageInfo imageInfo);
 
     @SelectProvider(type = ApplicationProvider.class, method = "openAppList")
     @Results({
             @Result(column = "user_id", property = "userId"),
             @Result(column = "create_time", property = "createTime")
     })
-    List<ApplicationDto> openAppList(Map<String, Object> params);
+    List<ImageDto> openAppList(Map<String, Object> params);
 
     @SelectProvider(type = ApplicationProvider.class, method = "openAppNo")
     int openAppNo();
@@ -37,14 +37,14 @@ public interface ApplicationMapper {
             @Result(column = "user_id", property = "userId"),
             @Result(column = "create_time", property = "createTime")
     })
-    List<ApplicationDto> userAppList(Map<String, Object> params);
+    List<ImageDto> userAppList(Map<String, Object> params);
 
     @UpdateProvider(type = ApplicationProvider.class, method = "deleteApp")
     int deleteApp(String id);
 
     @UpdateProvider(type = ApplicationProvider.class, method = "update")
-    int update(ApplicationInfo applicationInfo);
+    int update(ImageInfo imageInfo);
 
     @SelectProvider(type = ApplicationProvider.class,method = "getById")
-    ApplicationInfo getById(String id);
+    ImageInfo getById(String id);
 }

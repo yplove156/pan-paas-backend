@@ -3,8 +3,8 @@ package com.yp.pan.controller;
 import com.yp.pan.annotation.PanLog;
 import com.yp.pan.common.CustomEnum;
 import com.yp.pan.common.RoleEnum;
-import com.yp.pan.dto.ApplicationDto;
-import com.yp.pan.model.ApplicationInfo;
+import com.yp.pan.dto.ImageDto;
+import com.yp.pan.model.ImageInfo;
 import com.yp.pan.service.ApplicationService;
 import com.yp.pan.util.Page;
 import com.yp.pan.util.ServerException;
@@ -17,34 +17,34 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * ApplicationController class
+ * ImageController class
  *
  * @author Administrator
  * @date 2018/12/17
  */
 @RestController
-@RequestMapping("/applications")
-public class ApplicationController {
+@RequestMapping("/images")
+public class ImageController {
 
     private final ApplicationService applicationService;
 
     @Autowired
-    public ApplicationController(ApplicationService applicationService) {
+    public ImageController(ApplicationService applicationService) {
         this.applicationService = applicationService;
     }
 
     @PutMapping
     public Object addApplication(
-            @RequestBody ApplicationInfo applicationInfo,
+            @RequestBody ImageInfo imageInfo,
             @RequestAttribute String userId) {
-        applicationInfo.setId(UUID.randomUUID().toString());
-        applicationInfo.setUserId(userId);
-        applicationInfo.setCreateTime(System.currentTimeMillis());
-        applicationInfo.setUpdateTime(System.currentTimeMillis());
-        applicationInfo.setDeleteFlag(0);
-        int application = applicationService.addApplication(applicationInfo);
+        imageInfo.setId(UUID.randomUUID().toString());
+        imageInfo.setUserId(userId);
+        imageInfo.setCreateTime(System.currentTimeMillis());
+        imageInfo.setUpdateTime(System.currentTimeMillis());
+        imageInfo.setDeleteFlag(0);
+        int application = applicationService.addApplication(imageInfo);
         if (application == 1) {
-            return applicationInfo;
+            return imageInfo;
         }
         throw new ServerException(CustomEnum.ADD_APPLICATION_ERROR);
     }
@@ -58,13 +58,13 @@ public class ApplicationController {
         int limit = 20;
         int total = applicationService.openAppNo();
         if (total == 0) {
-            return new Page<ApplicationDto>(page, limit, 0, total, new ArrayList<>()) {
+            return new Page<ImageDto>(page, limit, 0, total, new ArrayList<>()) {
             };
         }
         int start = (page - 1) * limit;
         int totalPage = (total + limit - 1) / limit;
-        List<ApplicationDto> list = applicationService.openAppList(start, limit);
-        return new Page<ApplicationDto>(page, limit, totalPage, total, list) {
+        List<ImageDto> list = applicationService.openAppList(start, limit);
+        return new Page<ImageDto>(page, limit, totalPage, total, list) {
         };
     }
 
@@ -76,13 +76,13 @@ public class ApplicationController {
         int limit = 20;
         int total = applicationService.userAppNo(userId);
         if (total == 0) {
-            return new Page<ApplicationDto>(page, limit, 0, total, new ArrayList<>()) {
+            return new Page<ImageDto>(page, limit, 0, total, new ArrayList<>()) {
             };
         }
         int start = (page - 1) * limit;
         int totalPage = (total + limit - 1) / limit;
-        List<ApplicationDto> list = applicationService.userAppList(userId, start, limit);
-        return new Page<ApplicationDto>(page, limit, totalPage, total, list) {
+        List<ImageDto> list = applicationService.userAppList(userId, start, limit);
+        return new Page<ImageDto>(page, limit, totalPage, total, list) {
         };
     }
 
@@ -94,7 +94,7 @@ public class ApplicationController {
         if (StringUtils.isEmpty(id)) {
             throw new ServerException(CustomEnum.DELETE_APPLICATION_ERROR);
         }
-        ApplicationInfo applicationInfo = applicationService.getById(id);
+        ImageInfo imageInfo = applicationService.getById(id);
         int res = 0;
         if (RoleEnum.ADMIN.getRole().equals(role)) {
             res = applicationService.deleteApp(id);
@@ -103,7 +103,7 @@ public class ApplicationController {
             }
             throw new ServerException(CustomEnum.DELETE_APPLICATION_ERROR);
         }
-        if (applicationInfo == null || !userId.equals(applicationInfo.getUserId())) {
+        if (imageInfo == null || !userId.equals(imageInfo.getUserId())) {
             throw new ServerException(CustomEnum.NO_PERMISSION);
         }
         res = applicationService.deleteApp(id);
@@ -115,22 +115,22 @@ public class ApplicationController {
 
     @PostMapping
     public Object updateApp(
-            @RequestBody ApplicationInfo applicationInfo,
+            @RequestBody ImageInfo imageInfo,
             @RequestAttribute String userId,
             @RequestAttribute String role) {
-        ApplicationInfo info = applicationService.getById(applicationInfo.getId());
+        ImageInfo info = applicationService.getById(imageInfo.getId());
         if (info == null) {
             throw new ServerException(CustomEnum.UPDATE_APPLICATION_ERROR);
         }
         if (RoleEnum.ADMIN.getRole().equals(role)) {
-            applicationService.update(applicationInfo);
-            return applicationInfo.getId();
+            applicationService.update(imageInfo);
+            return imageInfo.getId();
         }
         if (userId.equals(info.getUserId())) {
-            applicationService.update(applicationInfo);
+            applicationService.update(imageInfo);
         } else {
             throw new ServerException(CustomEnum.NO_PERMISSION);
         }
-        return applicationInfo.getId();
+        return imageInfo.getId();
     }
 }

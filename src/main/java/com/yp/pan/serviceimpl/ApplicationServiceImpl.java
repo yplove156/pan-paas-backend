@@ -1,8 +1,8 @@
 package com.yp.pan.serviceimpl;
 
-import com.yp.pan.dto.ApplicationDto;
+import com.yp.pan.dto.ImageDto;
 import com.yp.pan.mapper.ApplicationMapper;
-import com.yp.pan.model.ApplicationInfo;
+import com.yp.pan.model.ImageInfo;
 import com.yp.pan.service.ApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,8 +29,8 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public int addApplication(ApplicationInfo applicationInfo) {
-        return applicationMapper.addApplication(applicationInfo);
+    public int addApplication(ImageInfo imageInfo) {
+        return applicationMapper.addApplication(imageInfo);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public List<ApplicationDto> openAppList(int start, int limit) {
+    public List<ImageDto> openAppList(int start, int limit) {
         Map<String, Object> params = new HashMap<>();
         params.put("start", start);
         params.put("limit", limit);
@@ -52,7 +52,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public List<ApplicationDto> userAppList(String userId, int start, int limit) {
+    public List<ImageDto> userAppList(String userId, int start, int limit) {
         Map<String, Object> params = new HashMap<>();
         params.put("userId", userId);
         params.put("start", start);
@@ -66,12 +66,12 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public int update(ApplicationInfo applicationInfo) {
-        return applicationMapper.update(applicationInfo);
+    public int update(ImageInfo imageInfo) {
+        return applicationMapper.update(imageInfo);
     }
 
     @Override
-    public ApplicationInfo getById(String id) {
+    public ImageInfo getById(String id) {
         return applicationMapper.getById(id);
     }
 }
