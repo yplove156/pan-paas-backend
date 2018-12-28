@@ -2,6 +2,7 @@ package com.yp.pan.controller;
 
 import com.yp.pan.annotation.PanLog;
 import com.yp.pan.common.CustomEnum;
+import com.yp.pan.common.LogCode;
 import com.yp.pan.common.RoleEnum;
 import com.yp.pan.dto.ImageDto;
 import com.yp.pan.model.ImageInfo;
@@ -34,6 +35,7 @@ public class ImageController {
     }
 
     @PutMapping
+    @PanLog(value = LogCode.ADD_IMAGE)
     public Object addApplication(
             @RequestBody ImageInfo imageInfo,
             @RequestAttribute String userId) {
@@ -50,7 +52,7 @@ public class ImageController {
     }
 
     @GetMapping("/{page}")
-    @PanLog("666")
+    @PanLog(value = LogCode.GET_OPEN_IMAGES)
     public Object openAppList(@PathVariable Integer page) {
         if (page == null || page < 1) {
             page = 1;
@@ -69,6 +71,7 @@ public class ImageController {
     }
 
     @GetMapping("/user/{page}")
+    @PanLog("查看私有应用列表")
     public Object openAppList(@RequestAttribute String userId, @PathVariable Integer page) {
         if (page == null || page < 1) {
             page = 1;
@@ -87,6 +90,7 @@ public class ImageController {
     }
 
     @DeleteMapping("/{id}")
+    @PanLog("删除应用市场应用")
     public Object deleteApp(
             @PathVariable String id,
             @RequestAttribute String userId,
@@ -114,6 +118,7 @@ public class ImageController {
     }
 
     @PostMapping
+    @PanLog("更新应用市场应用")
     public Object updateApp(
             @RequestBody ImageInfo imageInfo,
             @RequestAttribute String userId,
