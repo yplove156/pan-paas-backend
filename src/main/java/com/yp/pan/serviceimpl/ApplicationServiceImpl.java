@@ -1,8 +1,12 @@
 package com.yp.pan.serviceimpl;
 
 import com.yp.pan.common.CustomEnum;
+import com.yp.pan.common.RoleEnum;
 import com.yp.pan.config.K8sClient;
+import com.yp.pan.dto.DeleteAppDto;
 import com.yp.pan.dto.DeployDto;
+import com.yp.pan.dto.StartAppDto;
+import com.yp.pan.dto.StopAppDto;
 import com.yp.pan.model.ImageInfo;
 import com.yp.pan.service.ApplicationService;
 import com.yp.pan.service.ClusterService;
@@ -19,6 +23,7 @@ import io.fabric8.kubernetes.api.model.apps.DeploymentSpec;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -100,5 +105,120 @@ public class ApplicationServiceImpl implements ApplicationService {
             return deployDto.getImageId();
         }
         throw new ServerException(CustomEnum.DEPLOY_APPLICATION_ERROR);
+    }
+
+    @Override
+    public String stopApp(StopAppDto appDto, String userId, String role) {
+        KubernetesClient client = new K8sClient(clusterService).get();
+        Deployment deployment = client.apps().deployments()
+                .inNamespace(appDto.getNamespace())
+                .withName(appDto.getName()).get();
+        if (null == deployment) {
+            throw new ServerException(CustomEnum.STOP_APPLICATION_ERROR);
+        }
+        if (role.equals(RoleEnum.ADMIN.getRole())) {
+            boolean res = stopApp(client, appDto);
+            if (res) {
+                return appDto.getName();
+            }
+            throw new ServerException(CustomEnum.STOP_APPLICATION_ERROR);
+        }
+        String ownerId = deployment.getMetadata().getAnnotations().get("pan-user");
+        if (StringUtils.isEmpty(ownerId) || !ownerId.equals(userId)) {
+            throw new ServerException(CustomEnum.NO_PERMISSION);
+        } else {
+            boolean res = stopApp(client, appDto);
+            if (res) {
+                return appDto.getName();
+            }
+            throw new ServerException(CustomEnum.STOP_APPLICATION_ERROR);
+        }
+    }
+
+    @Override
+    public String startApp(StartAppDto appDto, String userId, String role) {
+        KubernetesClient client = new K8sClient(clusterService).get();
+        Deployment deployment = client.apps().deployments()
+                .inNamespace(appDto.getNamespace())
+                .withName(appDto.getName()).get();
+        if (null == deployment) {
+            throw new ServerException(CustomEnum.START_APPLICATION_ERROR);
+        }
+        if (role.equals(RoleEnum.ADMIN.getRole())) {
+            boolean res = startApp(client, appDto);
+            if (res) {
+                return appDto.getName();
+            }
+            throw new ServerException(CustomEnum.START_APPLICATION_ERROR);
+        }
+        String ownerId = deployment.getMetadata().getAnnotations().get("pan-user");
+        if (StringUtils.isEmpty(ownerId) || !ownerId.equals(userId)) {
+            throw new ServerException(CustomEnum.NO_PERMISSION);
+        } else {
+            boolean res = startApp(client, appDto);
+            if (res) {
+                return appDto.getName();
+            }
+            throw new ServerException(CustomEnum.START_APPLICATION_ERROR);
+        }
+    }
+
+    @Override
+    public String deleteApp(DeleteAppDto appDto, String userId, String role) {
+        KubernetesClient client = new K8sClient(clusterService).get();
+        Deployment deployment = client.apps().deployments()
+                .inNamespace(appDto.getNamespace())
+                .withName(appDto.getName()).get();
+        if (null == deployment) {
+            throw new ServerException(CustomEnum.START_APPLICATION_ERROR);
+        }
+        if (role.equals(RoleEnum.ADMIN.getRole())) {
+            boolean res = deleteApp(client, appDto);
+            if (res) {
+                return appDto.getName();
+            }
+            throw new ServerException(CustomEnum.START_APPLICATION_ERROR);
+        }
+        String ownerId = deployment.getMetadata().getAnnotations().get("pan-user");
+        if (StringUtils.isEmpty(ownerId) || !ownerId.equals(userId)) {
+            throw new ServerException(CustomEnum.NO_PERMISSION);
+        } else {
+            boolean res = deleteApp(client, appDto);
+            if (res) {
+                return appDto.getName();
+            }
+            throw new ServerException(CustomEnum.START_APPLICATION_ERROR);
+        }
+    }
+
+    private boolean stopApp(KubernetesClient client, StopAppDto appDto) {
+        Deployment stop = client.apps().deployments()
+                .inNamespace(appDto.getNamespace())
+                .withName(appDto.getName())
+                .edit()
+                .withNewSpec()
+                .withReplicas(0)
+                .endSpec()
+                .done();
+        return stop != null;
+    }
+
+    private boolean startApp(KubernetesClient client, StartAppDto appDto) {
+        Deployment start = client.apps().deployments()
+                .inNamespace(appDto.getNamespace())
+                .withName(appDto.getName())
+                .edit()
+                .withNewSpec()
+                .withReplicas(appDto.getReplicas())
+                .endSpec()
+                .done();
+        return start != null;
+    }
+
+    private boolean deleteApp(KubernetesClient client, DeleteAppDto appDto) {
+        return client.apps().deployments()
+                .inNamespace(appDto.getNamespace())
+                .withName(appDto.getName())
+                .delete();
     }
 }
