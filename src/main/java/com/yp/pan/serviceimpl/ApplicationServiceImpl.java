@@ -1,77 +1,104 @@
 package com.yp.pan.serviceimpl;
 
-import com.yp.pan.dto.ImageDto;
-import com.yp.pan.mapper.ApplicationMapper;
+import com.yp.pan.common.CustomEnum;
+import com.yp.pan.config.K8sClient;
+import com.yp.pan.dto.DeployDto;
 import com.yp.pan.model.ImageInfo;
 import com.yp.pan.service.ApplicationService;
+import com.yp.pan.service.ClusterService;
+import com.yp.pan.service.ImageService;
+import com.yp.pan.util.ServerException;
+import io.fabric8.kubernetes.api.model.Container;
+import io.fabric8.kubernetes.api.model.ContainerPort;
+import io.fabric8.kubernetes.api.model.LabelSelector;
+import io.fabric8.kubernetes.api.model.ObjectMeta;
+import io.fabric8.kubernetes.api.model.PodSpec;
+import io.fabric8.kubernetes.api.model.PodTemplateSpec;
+import io.fabric8.kubernetes.api.model.apps.Deployment;
+import io.fabric8.kubernetes.api.model.apps.DeploymentSpec;
+import io.fabric8.kubernetes.client.KubernetesClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * ApplicationServiceImpl class
- *
- * @author Administrator
- * @date 2018/12/17
- */
-@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 @Service
 public class ApplicationServiceImpl implements ApplicationService {
 
-    private final ApplicationMapper applicationMapper;
+
+    private final ClusterService clusterService;
+
+    private final ImageService imageService;
 
     @Autowired
-    public ApplicationServiceImpl(ApplicationMapper applicationMapper) {
-        this.applicationMapper = applicationMapper;
+    public ApplicationServiceImpl(ClusterService clusterService, ImageService imageService) {
+        this.clusterService = clusterService;
+        this.imageService = imageService;
     }
 
     @Override
-    public int addApplication(ImageInfo imageInfo) {
-        return applicationMapper.addApplication(imageInfo);
-    }
+    public String deploy(DeployDto deployDto) {
+        KubernetesClient client = new K8sClient(clusterService).get();
+        ImageInfo imageInfo = imageService.getById(deployDto.getImageId());
+        if (imageInfo == null) {
+            throw new ServerException(CustomEnum.GET_IMAGE_ERROR);
+        }
+        Deployment deployment = new Deployment();
 
-    @Override
-    public int openAppNo() {
-        return applicationMapper.openAppNo();
-    }
+        ObjectMeta meta = new ObjectMeta();
+        meta.setName(imageInfo.getName());
 
-    @Override
-    public List<ImageDto> openAppList(int start, int limit) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("start", start);
-        params.put("limit", limit);
-        return applicationMapper.openAppList(params);
-    }
+        Map<String, String> labels = new HashMap<>();
+        labels.put("app", imageInfo.getName());
+        meta.setLabels(labels);
 
-    @Override
-    public int userAppNo(String userId) {
-        return applicationMapper.userAppNo(userId);
-    }
+        Map<String, String> annotations = new HashMap<>();
+        annotations.put("pan-user", imageInfo.getUserId());
+        annotations.put("pan-desc", imageInfo.getDescription());
+        meta.setAnnotations(annotations);
 
-    @Override
-    public List<ImageDto> userAppList(String userId, int start, int limit) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("userId", userId);
-        params.put("start", start);
-        params.put("limit", limit);
-        return applicationMapper.userAppList(params);
-    }
+        deployment.setMetadata(meta);
 
-    @Override
-    public int deleteApp(String id) {
-        return applicationMapper.deleteApp(id);
-    }
+        DeploymentSpec spec = new DeploymentSpec();
 
-    @Override
-    public int update(ImageInfo imageInfo) {
-        return applicationMapper.update(imageInfo);
-    }
+        spec.setReplicas(deployDto.getReplicas());
 
-    @Override
-    public ImageInfo getById(String id) {
-        return applicationMapper.getById(id);
+        LabelSelector labelSelector = new LabelSelector();
+        labelSelector.setMatchLabels(labels);
+        spec.setSelector(labelSelector);
+
+        PodTemplateSpec templateSpec = new PodTemplateSpec();
+        ObjectMeta templateMeta = new ObjectMeta();
+        templateMeta.setLabels(labels);
+        templateSpec.setMetadata(templateMeta);
+
+        PodSpec podSpec = new PodSpec();
+        List<Container> containers = new ArrayList<>();
+        Container container = new Container();
+        container.setImage(imageInfo.getImage());
+        container.setName(imageInfo.getName());
+        container.setImagePullPolicy(deployDto.getImagePullPolicy());
+        List<ContainerPort> ports = new ArrayList<>();
+        ContainerPort port = new ContainerPort();
+        port.setContainerPort(80);
+        ports.add(port);
+        container.setPorts(ports);
+        containers.add(container);
+        podSpec.setContainers(containers);
+        templateSpec.setSpec(podSpec);
+        spec.setTemplate(templateSpec);
+
+        deployment.setSpec(spec);
+
+        Deployment orReplace = client.apps().deployments()
+                .inNamespace(deployDto.getNamespace())
+                .createOrReplace(deployment);
+        if (orReplace != null) {
+            return deployDto.getImageId();
+        }
+        throw new ServerException(CustomEnum.DEPLOY_APPLICATION_ERROR);
     }
 }

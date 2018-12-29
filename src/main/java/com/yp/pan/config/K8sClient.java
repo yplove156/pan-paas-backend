@@ -2,15 +2,11 @@ package com.yp.pan.config;
 
 import com.yp.pan.model.ClusterInfo;
 import com.yp.pan.service.ClusterService;
-import com.yp.pan.serviceimpl.ClusterServiceImpl;
 import io.fabric8.kubernetes.client.Config;
 import io.fabric8.kubernetes.client.ConfigBuilder;
 import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 /**

@@ -6,7 +6,7 @@ import com.yp.pan.common.LogCode;
 import com.yp.pan.common.RoleEnum;
 import com.yp.pan.dto.ImageDto;
 import com.yp.pan.model.ImageInfo;
-import com.yp.pan.service.ApplicationService;
+import com.yp.pan.service.ImageService;
 import com.yp.pan.util.Page;
 import com.yp.pan.util.ServerException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +27,10 @@ import java.util.UUID;
 @RequestMapping("/images")
 public class ImageController {
 
-    private final ApplicationService applicationService;
+    private final ImageService applicationService;
 
     @Autowired
-    public ImageController(ApplicationService applicationService) {
+    public ImageController(ImageService applicationService) {
         this.applicationService = applicationService;
     }
 
@@ -48,7 +48,7 @@ public class ImageController {
         if (application == 1) {
             return imageInfo;
         }
-        throw new ServerException(CustomEnum.ADD_APPLICATION_ERROR);
+        throw new ServerException(CustomEnum.ADD_IMAGE_ERROR);
     }
 
     @GetMapping("/{page}")
@@ -96,7 +96,7 @@ public class ImageController {
             @RequestAttribute String userId,
             @RequestAttribute String role) {
         if (StringUtils.isEmpty(id)) {
-            throw new ServerException(CustomEnum.DELETE_APPLICATION_ERROR);
+            throw new ServerException(CustomEnum.DELETE_IMAGE_ERROR);
         }
         ImageInfo imageInfo = applicationService.getById(id);
         int res = 0;
@@ -105,7 +105,7 @@ public class ImageController {
             if (res == 1) {
                 return id;
             }
-            throw new ServerException(CustomEnum.DELETE_APPLICATION_ERROR);
+            throw new ServerException(CustomEnum.DELETE_IMAGE_ERROR);
         }
         if (imageInfo == null || !userId.equals(imageInfo.getUserId())) {
             throw new ServerException(CustomEnum.NO_PERMISSION);
@@ -114,7 +114,7 @@ public class ImageController {
         if (res == 1) {
             return id;
         }
-        throw new ServerException(CustomEnum.DELETE_APPLICATION_ERROR);
+        throw new ServerException(CustomEnum.DELETE_IMAGE_ERROR);
     }
 
     @PostMapping
@@ -125,7 +125,7 @@ public class ImageController {
             @RequestAttribute String role) {
         ImageInfo info = applicationService.getById(imageInfo.getId());
         if (info == null) {
-            throw new ServerException(CustomEnum.UPDATE_APPLICATION_ERROR);
+            throw new ServerException(CustomEnum.UPDATE_IMAGE_ERROR);
         }
         if (RoleEnum.ADMIN.getRole().equals(role)) {
             applicationService.update(imageInfo);
