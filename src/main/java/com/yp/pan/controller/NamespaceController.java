@@ -1,5 +1,6 @@
 package com.yp.pan.controller;
 
+import com.yp.pan.common.CustomAnno;
 import com.yp.pan.common.CustomEnum;
 import com.yp.pan.common.RoleEnum;
 import com.yp.pan.config.K8sClient;
@@ -32,6 +33,7 @@ import java.util.Map;
  * @author Administrator
  * @date 2018/11/18
  */
+@SuppressWarnings("Duplicates")
 @RestController
 @RequestMapping("/namespaces")
 public class NamespaceController {
@@ -57,6 +59,34 @@ public class NamespaceController {
         });
     }
 
+    @GetMapping("/user")
+    public Object userNamespace(@RequestAttribute String userId,
+                                @RequestAttribute String role) {
+        SimpleDateFormat sdf = new SimpleDateFormat(FORMAT);
+        return new K8sClient(clusterService).get()
+                .namespaces().list().getItems()
+                .stream()
+                .filter(namespace -> {
+                    if (role.equals(RoleEnum.ADMIN.getRole())) {
+                        return true;
+                    }
+                    String user = namespace.getMetadata().getAnnotations().get(CustomAnno.PAN_USER);
+                    if (null != user && user.equals(userId)) {
+                        return true;
+                    }
+                    return false;
+                })
+                .sorted((x, y) -> {
+                    try {
+                        Long dateX = sdf.parse(x.getMetadata().getCreationTimestamp()).getTime();
+                        Long dateY = sdf.parse(y.getMetadata().getCreationTimestamp()).getTime();
+                        return dateX.compareTo(dateY);
+                    } catch (ParseException e) {
+                        return 1;
+                    }
+                });
+    }
+
     @PutMapping
     public Object addNamespace(@RequestBody NamespaceDto namespaceDto, @RequestAttribute String userId) {
         if (namespaceDto == null) {
@@ -65,8 +95,8 @@ public class NamespaceController {
         ObjectMeta namespaceOM = new ObjectMeta();
         namespaceOM.setName(namespaceDto.getName().toLowerCase());
         HashMap<String, String> customMap = new HashMap<>(1);
-        customMap.put("pan-desc", namespaceDto.getDesc());
-        customMap.put("pan-user", userId);
+        customMap.put(CustomAnno.PAN_USER, namespaceDto.getDesc());
+        customMap.put(CustomAnno.PAN_DESC, userId);
         namespaceOM.setAnnotations(customMap);
         Namespace namespace = new Namespace();
         namespace.setMetadata(namespaceOM);
@@ -102,7 +132,7 @@ public class NamespaceController {
         //否则验证用户是否有权限
         Namespace namespace = namespaceDoneableNamespaceResource.get();
         Map<String, String> annotations = namespace.getMetadata().getAnnotations();
-        String user = annotations.get("pan-user");
+        String user = annotations.get(CustomAnno.PAN_USER);
         if (null == user || !user.equals(userId)) {
             throw new ServerException(CustomEnum.NO_PERMISSION);
         }

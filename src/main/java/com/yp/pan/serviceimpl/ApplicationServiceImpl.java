@@ -1,5 +1,6 @@
 package com.yp.pan.serviceimpl;
 
+import com.yp.pan.common.CustomAnno;
 import com.yp.pan.common.CustomEnum;
 import com.yp.pan.common.RoleEnum;
 import com.yp.pan.config.K8sClient;
@@ -61,8 +62,8 @@ public class ApplicationServiceImpl implements ApplicationService {
         meta.setLabels(labels);
 
         Map<String, String> annotations = new HashMap<>();
-        annotations.put("pan-user", imageInfo.getUserId());
-        annotations.put("pan-desc", imageInfo.getDescription());
+        annotations.put(CustomAnno.PAN_USER, imageInfo.getUserId());
+        annotations.put(CustomAnno.PAN_DESC, imageInfo.getDescription());
         meta.setAnnotations(annotations);
 
         deployment.setMetadata(meta);
