@@ -18,7 +18,6 @@ public class TestController {
 
     @RequestMapping("/test")
     public Object test(HttpServletRequest request) {
-//        NodeMe
-        return new K8sClient(clusterService).get().namespaces().list(2, "eyJ2IjoibWV0YS5rOHMuaW8vdjEiLCJydiI6MjA0MTgwOSwic3RhcnQiOiJrdWJlLXB1YmxpY1x1MDAwMCJ9");
+        return null;
     }
 }
