@@ -40,6 +40,8 @@ public enum CustomEnum {
     START_APPLICATION_ERROR("START_APPLICATION_ERROR", "启动应用失败"),
     DELETE_APPLICATION_ERROR("DELETE_APPLICATION_ERROR", "删除应用失败"),
 
+    DELETE_SERVICE_ERROR("DELETE_SERVICE_ERROR", "删除Service失败"),
+
     /**
      * 出现未知异常
      */
