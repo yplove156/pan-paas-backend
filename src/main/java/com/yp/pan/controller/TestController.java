@@ -2,6 +2,9 @@ package com.yp.pan.controller;
 
 import com.yp.pan.config.K8sClient;
 import com.yp.pan.service.ClusterService;
+import io.fabric8.kubernetes.api.model.extensions.Ingress;
+import io.fabric8.kubernetes.api.model.extensions.IngressSpec;
+import io.fabric8.kubernetes.client.KubernetesClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,7 +21,10 @@ public class TestController {
 
     @RequestMapping("/test")
     public Object test(HttpServletRequest request) {
-//        NodeMe
-        return new K8sClient(clusterService).get().namespaces().list(2, "eyJ2IjoibWV0YS5rOHMuaW8vdjEiLCJydiI6MjA0MTgwOSwic3RhcnQiOiJrdWJlLXB1YmxpY1x1MDAwMCJ9");
+        KubernetesClient kubernetesClient = new K8sClient(clusterService).get();
+        Ingress ingress = new Ingress();
+        IngressSpec ingressSpec = new IngressSpec();
+        kubernetesClient.extensions().ingresses().inNamespace("").createOrReplace();
+        return null;
     }
 }

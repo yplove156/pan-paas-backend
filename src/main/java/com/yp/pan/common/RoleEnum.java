@@ -1,6 +1,7 @@
 package com.yp.pan.common;
 
 public enum RoleEnum {
+
     ADMIN("admin"),
     MANAGER("manager");
 
