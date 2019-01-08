@@ -57,27 +57,30 @@ public class CommonAop {
 
         try {
             res = proceedingJoinPoint.proceed();
-            logInfo.setStatus(true);
+            logInfo.setStatus(1);
             logInfo.setRes(JSONObject.toJSONString(res));
         } catch (ServerException e) {
-            logInfo.setStatus(false);
+            logInfo.setStatus(0);
             logInfo.setException(e.getClass().getSimpleName());
             logInfo.setCode(e.getCode());
             logInfo.setMessage(e.getMessage());
+            CompletableFuture.runAsync(() -> {
+                logService.addLog(logInfo);
+            });
             return ResponseEntity.getFail(e.getCode(), e.getMessage());
         } catch (Throwable throwable) {
-            throwable.printStackTrace();
-            logInfo.setStatus(false);
+//            throwable.printStackTrace();
+            logInfo.setStatus(0);
             logInfo.setException(throwable.getClass().getSimpleName());
             logInfo.setCode(CustomEnum.COMMON_EXCEPTION.getCode());
             logInfo.setMessage(throwable.getMessage());
+            CompletableFuture.runAsync(() -> {
+                logService.addLog(logInfo);
+            });
             return ResponseEntity.getFail(CustomEnum.COMMON_EXCEPTION.getCode(), CustomEnum.COMMON_EXCEPTION.getMsg());
         }
         CompletableFuture.runAsync(() -> {
-            System.out.println("***********************************");
-            System.out.println(JSONObject.toJSON(logInfo));
             logService.addLog(logInfo);
-            System.out.println("----------------------------------");
         });
         return ResponseEntity.getSuccess(res);
     }

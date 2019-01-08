@@ -18,7 +18,7 @@ public class LogInfo {
     private String id;
     private String action;
     private String user;
-    private Boolean status;
+    private Integer status;
     private String res;
     private String exception;
     private String code;

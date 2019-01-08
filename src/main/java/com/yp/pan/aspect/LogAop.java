@@ -77,7 +77,7 @@ public class LogAop {
             out.print(point.getSignature().getName() + "-throwed-ex-");
             out.print(ex.getMessage() + "-" + ex.getClass().getSimpleName());
             out.println();
-            ex.printStackTrace(out);
+//            ex.printStackTrace(out);
         }
     }
 }

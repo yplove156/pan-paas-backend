@@ -116,7 +116,7 @@ public class NamespaceController {
     public Object deleteNamespace(
             @PathVariable String name,
             @RequestAttribute String userId,
-            @RequestAttribute String role) {
+            @RequestAttribute String role) throws Exception{
         if (StringUtils.isEmpty(name)) {
             throw new ServerException(CustomEnum.NAMESPACE_DELETE_ERROR);
         }
