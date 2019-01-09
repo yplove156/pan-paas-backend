@@ -47,7 +47,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public String deploy(DeployDto deployDto) {
-        KubernetesClient client = new K8sClient(clusterService).get();
+        KubernetesClient client = K8sClient.init(clusterService);
         ImageInfo imageInfo = imageService.getById(deployDto.getImageId());
         if (imageInfo == null) {
             throw new ServerException(CustomEnum.GET_IMAGE_ERROR);
@@ -110,7 +110,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public String stopApp(StopAppDto appDto, String userId, String role) {
-        KubernetesClient client = new K8sClient(clusterService).get();
+        KubernetesClient client = K8sClient.init(clusterService);
         Deployment deployment = client.apps().deployments()
                 .inNamespace(appDto.getNamespace())
                 .withName(appDto.getName()).get();
@@ -138,7 +138,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public String startApp(StartAppDto appDto, String userId, String role) {
-        KubernetesClient client = new K8sClient(clusterService).get();
+        KubernetesClient client = K8sClient.init(clusterService);
         Deployment deployment = client.apps().deployments()
                 .inNamespace(appDto.getNamespace())
                 .withName(appDto.getName()).get();
@@ -166,7 +166,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public String deleteApp(DeleteAppDto appDto, String userId, String role) {
-        KubernetesClient client = new K8sClient(clusterService).get();
+        KubernetesClient client = K8sClient.init(clusterService);
         Deployment deployment = client.apps().deployments()
                 .inNamespace(appDto.getNamespace())
                 .withName(appDto.getName()).get();

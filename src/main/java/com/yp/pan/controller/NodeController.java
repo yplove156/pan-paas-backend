@@ -30,7 +30,7 @@ public class NodeController {
 
     @GetMapping
     public Object getNodes() {
-        return new K8sClient(clusterService).get().nodes().list().getItems();
+        return K8sClient.init(clusterService).nodes().list().getItems();
     }
 
     @GetMapping("/{name}")
@@ -38,6 +38,6 @@ public class NodeController {
         if (StringUtils.isEmpty(name)) {
             throw new ServerException(CustomEnum.NODE_DETAIL_ERROR);
         }
-        return new K8sClient(clusterService).get().nodes().withName(name).get();
+        return K8sClient.init(clusterService).nodes().withName(name).get();
     }
 }

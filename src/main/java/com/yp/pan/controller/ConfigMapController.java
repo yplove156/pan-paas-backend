@@ -28,7 +28,7 @@ public class ConfigMapController {
 
     @GetMapping
     public Object configMapList() {
-        KubernetesClient client = new K8sClient(clusterService).get();
+        KubernetesClient client = K8sClient.init(clusterService);
         return client.configMaps().list();
     }
 
@@ -36,7 +36,7 @@ public class ConfigMapController {
     public Object createConfigMap(
             @RequestBody Map<String, String> data,
             @RequestAttribute String userId) {
-        KubernetesClient client = new K8sClient(clusterService).get();
+        KubernetesClient client = K8sClient.init(clusterService);
         ConfigMap configMap = new ConfigMap();
         ObjectMeta meta = new ObjectMeta();
         Map<String, String> annotations = new HashMap<>();

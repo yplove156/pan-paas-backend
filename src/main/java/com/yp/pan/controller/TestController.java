@@ -21,7 +21,7 @@ public class TestController {
 
     @RequestMapping("/test")
     public Object test(HttpServletRequest request) {
-        KubernetesClient kubernetesClient = new K8sClient(clusterService).get();
+        KubernetesClient kubernetesClient = K8sClient.init(clusterService);
         Ingress ingress = new Ingress();
         IngressSpec ingressSpec = new IngressSpec();
         kubernetesClient.extensions().ingresses().inNamespace("").createOrReplace();

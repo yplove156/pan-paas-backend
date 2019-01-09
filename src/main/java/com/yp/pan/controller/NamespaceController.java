@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
@@ -48,7 +47,7 @@ public class NamespaceController {
     @GetMapping
     public Object namespaces() {
         SimpleDateFormat sdf = new SimpleDateFormat(FORMAT);
-        return new K8sClient(clusterService).get().namespaces().list().getItems().stream().sorted((x, y) -> {
+        return K8sClient.init(clusterService).namespaces().list().getItems().stream().sorted((x, y) -> {
             try {
                 Long dateX = sdf.parse(x.getMetadata().getCreationTimestamp()).getTime();
                 Long dateY = sdf.parse(y.getMetadata().getCreationTimestamp()).getTime();
@@ -63,7 +62,7 @@ public class NamespaceController {
     public Object userNamespace(@RequestAttribute String userId,
                                 @RequestAttribute String role) {
         SimpleDateFormat sdf = new SimpleDateFormat(FORMAT);
-        return new K8sClient(clusterService).get()
+        return K8sClient.init(clusterService)
                 .namespaces().list().getItems()
                 .stream()
                 .filter(namespace -> {
@@ -102,7 +101,7 @@ public class NamespaceController {
         namespace.setMetadata(namespaceOM);
         Namespace replaceOrNew;
         try {
-            replaceOrNew = new K8sClient(clusterService).get().namespaces().createOrReplace(namespace);
+            replaceOrNew = K8sClient.init(clusterService).namespaces().createOrReplace(namespace);
             if (replaceOrNew != null) {
                 return replaceOrNew;
             }
@@ -116,27 +115,27 @@ public class NamespaceController {
     public Object deleteNamespace(
             @PathVariable String name,
             @RequestAttribute String userId,
-            @RequestAttribute String role) throws Exception{
+            @RequestAttribute String role) {
         if (StringUtils.isEmpty(name)) {
             throw new ServerException(CustomEnum.NAMESPACE_DELETE_ERROR);
         }
-        Resource<Namespace, DoneableNamespace> namespaceDoneableNamespaceResource = new K8sClient(clusterService).get().namespaces().withName(name);
+        Resource<Namespace, DoneableNamespace> resource = K8sClient.init(clusterService).namespaces().withName(name);
         //检测到是管理员，强制执行
         if (RoleEnum.ADMIN.getRole().equals(role)) {
-            Boolean delete = namespaceDoneableNamespaceResource.delete();
+            Boolean delete = resource.delete();
             if (delete) {
                 return name;
             }
             throw new ServerException(CustomEnum.NAMESPACE_DELETE_ERROR);
         }
         //否则验证用户是否有权限
-        Namespace namespace = namespaceDoneableNamespaceResource.get();
+        Namespace namespace = resource.get();
         Map<String, String> annotations = namespace.getMetadata().getAnnotations();
         String user = annotations.get(CustomAnno.PAN_USER);
         if (null == user || !user.equals(userId)) {
             throw new ServerException(CustomEnum.NO_PERMISSION);
         }
-        Boolean delete = namespaceDoneableNamespaceResource.delete();
+        Boolean delete = resource.delete();
         if (delete) {
             return name;
         }

@@ -25,7 +25,7 @@ public class ServiceController {
 
     @GetMapping
     public Object services() {
-        KubernetesClient client = new K8sClient(clusterService).get();
+        KubernetesClient client = K8sClient.init(clusterService);
         return client.services().list();
     }
 
@@ -35,7 +35,7 @@ public class ServiceController {
             @PathVariable String name,
             @RequestAttribute String role,
             @RequestAttribute String userId) {
-        KubernetesClient client = new K8sClient(clusterService).get();
+        KubernetesClient client = K8sClient.init(clusterService);
         Boolean delete = false;
         if (RoleEnum.ADMIN.getRole().equals(role)) {
             delete = client.configMaps().inNamespace(namespace).withName(name).delete();
