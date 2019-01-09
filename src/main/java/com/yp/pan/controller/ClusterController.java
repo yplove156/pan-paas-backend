@@ -30,32 +30,13 @@ public class ClusterController {
     }
 
     @PutMapping
-    public Object addCluster(@RequestBody ClusterInfoDto clusterInfoDto) throws Exception {
-        ClusterInfo clusterInfo = new ClusterInfo();
-        clusterInfo.setId(UUID.randomUUID().toString());
-        clusterInfo.setCaCertData(clusterInfoDto.getCaCertData());
-        clusterInfo.setClientCertData(clusterInfoDto.getClientCertData());
-        clusterInfo.setClientKeyData(clusterInfoDto.getClientKeyData());
-        clusterInfo.setOpen(clusterInfoDto.getOpen());
-        clusterInfo.setUrl(clusterInfoDto.getUrl());
-        clusterInfo.setCreateTime(System.currentTimeMillis());
-        clusterInfo.setUpdateTime(System.currentTimeMillis());
-        clusterInfo.setDeleteFlag(0);
-        int res = clusterService.addCluster(clusterInfo);
-        if (res == 1) {
-            return null;
-        }
-        throw new ServerException(CustomEnum.ADD_CLUSTER_ERROR);
+    public Object addCluster(@RequestBody ClusterInfoDto clusterInfoDto) {
+        return clusterService.addCluster(clusterInfoDto);
     }
 
     @PostMapping
     public Object updateCluster(@RequestBody ClusterInfoDto clusterInfoDto) {
-        clusterInfoDto.setCreateTime(System.currentTimeMillis());
-        int res = clusterService.updateCluster(clusterInfoDto);
-        if (res == 1) {
-            return null;
-        }
-        throw new ServerException(CustomEnum.EDIT_CLUSTER_ERROR);
+        return clusterService.updateCluster(clusterInfoDto);
     }
 
     @DeleteMapping("/{id}")
@@ -63,28 +44,11 @@ public class ClusterController {
         if (StringUtils.isEmpty(id)) {
             throw new ServerException(CustomEnum.DELETE_CLUSTER_ERROR);
         }
-        int res = clusterService.deleteClusterById(id);
-        if (res == 1) {
-            return id;
-        }
-        throw new ServerException(CustomEnum.DELETE_CLUSTER_ERROR);
+        return clusterService.deleteClusterById(id);
     }
 
     @GetMapping
     public Object clusterList() {
-        List<ClusterInfoDto> clusterInfoDtos = new ArrayList<>();
-        List<ClusterInfo> clusterInfos = clusterService.clusterList();
-        clusterInfos.forEach(clusterInfo -> {
-            ClusterInfoDto clusterInfoDto = new ClusterInfoDto();
-            clusterInfoDto.setId(clusterInfo.getId());
-            clusterInfoDto.setCaCertData(clusterInfo.getCaCertData());
-            clusterInfoDto.setClientCertData(clusterInfo.getClientCertData());
-            clusterInfoDto.setClientKeyData(clusterInfo.getClientKeyData());
-            clusterInfoDto.setOpen(clusterInfo.getOpen());
-            clusterInfoDto.setUrl(clusterInfo.getUrl());
-            clusterInfoDto.setCreateTime(clusterInfo.getCreateTime());
-            clusterInfoDtos.add(clusterInfoDto);
-        });
-        return clusterInfoDtos;
+        return clusterService.clusterList();
     }
 }

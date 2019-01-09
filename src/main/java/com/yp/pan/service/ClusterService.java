@@ -15,11 +15,11 @@ public interface ClusterService {
 
     ClusterInfo getCluster();
 
-    int addCluster(ClusterInfo clusterInfo);
+    int addCluster(ClusterInfoDto clusterInfoDto);
 
     int deleteClusterById(String id);
 
-    List<ClusterInfo> clusterList();
+    List<ClusterInfoDto> clusterList();
 
     int updateCluster(ClusterInfoDto clusterInfoDto);
 }
