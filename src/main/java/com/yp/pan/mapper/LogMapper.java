@@ -11,7 +11,7 @@ import java.util.Map;
 public interface LogMapper {
 
     @InsertProvider(type = LogProvider.class, method = "addLog")
-    void addLog(LogInfo logInfo);
+    int addLog(LogInfo logInfo);
 
     @SelectProvider(type = LogProvider.class, method = "logList")
     List<LogInfo> logList(Map<String, Object> params);

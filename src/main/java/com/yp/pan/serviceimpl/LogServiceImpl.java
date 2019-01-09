@@ -19,7 +19,8 @@ public class LogServiceImpl implements LogService {
 
     @Override
     public void addLog(LogInfo logInfo) {
-        logMapper.addLog(logInfo);
+        int i = logMapper.addLog(logInfo);
+        System.out.println(i);
     }
 
     @Override

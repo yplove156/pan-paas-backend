@@ -64,24 +64,18 @@ public class CommonAop {
             logInfo.setException(e.getClass().getSimpleName());
             logInfo.setCode(e.getCode());
             logInfo.setMessage(e.getMessage());
-            CompletableFuture.runAsync(() -> {
-                logService.addLog(logInfo);
-            });
+            CompletableFuture.runAsync(() -> logService.addLog(logInfo));
             return ResponseEntity.getFail(e.getCode(), e.getMessage());
         } catch (Throwable throwable) {
-//            throwable.printStackTrace();
+            throwable.printStackTrace();
             logInfo.setStatus(0);
             logInfo.setException(throwable.getClass().getSimpleName());
             logInfo.setCode(CustomEnum.COMMON_EXCEPTION.getCode());
             logInfo.setMessage(throwable.getMessage());
-            CompletableFuture.runAsync(() -> {
-                logService.addLog(logInfo);
-            });
+            CompletableFuture.runAsync(() -> logService.addLog(logInfo));
             return ResponseEntity.getFail(CustomEnum.COMMON_EXCEPTION.getCode(), CustomEnum.COMMON_EXCEPTION.getMsg());
         }
-        CompletableFuture.runAsync(() -> {
-            logService.addLog(logInfo);
-        });
+        CompletableFuture.runAsync(() -> logService.addLog(logInfo));
         return ResponseEntity.getSuccess(res);
     }
 }
