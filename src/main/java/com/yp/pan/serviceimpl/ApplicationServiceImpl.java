@@ -124,7 +124,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             }
             throw new ServerException(CustomEnum.STOP_APPLICATION_ERROR);
         }
-        String ownerId = deployment.getMetadata().getAnnotations().get("pan-user");
+        String ownerId = deployment.getMetadata().getAnnotations().get(CustomAnno.PAN_USER);
         if (StringUtils.isEmpty(ownerId) || !ownerId.equals(userId)) {
             throw new ServerException(CustomEnum.NO_PERMISSION);
         } else {
@@ -152,7 +152,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             }
             throw new ServerException(CustomEnum.START_APPLICATION_ERROR);
         }
-        String ownerId = deployment.getMetadata().getAnnotations().get("pan-user");
+        String ownerId = deployment.getMetadata().getAnnotations().get(CustomAnno.PAN_USER);
         if (StringUtils.isEmpty(ownerId) || !ownerId.equals(userId)) {
             throw new ServerException(CustomEnum.NO_PERMISSION);
         } else {
@@ -180,7 +180,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             }
             throw new ServerException(CustomEnum.START_APPLICATION_ERROR);
         }
-        String ownerId = deployment.getMetadata().getAnnotations().get("pan-user");
+        String ownerId = deployment.getMetadata().getAnnotations().get(CustomAnno.PAN_USER);
         if (StringUtils.isEmpty(ownerId) || !ownerId.equals(userId)) {
             throw new ServerException(CustomEnum.NO_PERMISSION);
         } else {
