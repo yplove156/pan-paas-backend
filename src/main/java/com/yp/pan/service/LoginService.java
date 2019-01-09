@@ -1,5 +1,8 @@
 package com.yp.pan.service;
 
+import com.yp.pan.dto.LoginDto;
+import com.yp.pan.dto.UserInfoDto;
+
 /**
  * LoginService class
  *
@@ -8,5 +11,5 @@ package com.yp.pan.service;
  */
 public interface LoginService {
 
-
+    UserInfoDto login(LoginDto loginDto);
 }
