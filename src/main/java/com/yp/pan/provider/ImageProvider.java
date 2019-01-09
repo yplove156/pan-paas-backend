@@ -11,7 +11,7 @@ import java.util.Map;
  * @author Administrator
  * @date 2018/12/13
  */
-public class ApplicationProvider {
+public class ImageProvider {
 
     public String addApplication(ImageInfo imageInfo) {
         return new SQL() {
@@ -62,7 +62,7 @@ public class ApplicationProvider {
                 WHERE("open=1", "delete_flag=0");
                 ORDER_BY("create_time desc");
             }
-        }.toString() + "limit #{start},#{limit}";
+        }.toString() + " limit #{start},#{limit}";
     }
 
     public String userAppList(Map<String, Object> params) {

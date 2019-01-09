@@ -1,7 +1,7 @@
 package com.yp.pan.serviceimpl;
 
 import com.yp.pan.dto.ImageDto;
-import com.yp.pan.mapper.ApplicationMapper;
+import com.yp.pan.mapper.ImageMapper;
 import com.yp.pan.model.ImageInfo;
 import com.yp.pan.service.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +21,10 @@ import java.util.Map;
 @Service
 public class ImageServiceImpl implements ImageService {
 
-    private final ApplicationMapper applicationMapper;
+    private final ImageMapper applicationMapper;
 
     @Autowired
-    public ImageServiceImpl(ApplicationMapper applicationMapper) {
+    public ImageServiceImpl(ImageMapper applicationMapper) {
         this.applicationMapper = applicationMapper;
     }
 
