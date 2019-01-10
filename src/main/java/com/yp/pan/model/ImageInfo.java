@@ -25,6 +25,8 @@ public class ImageInfo {
     private Integer open;
     private Integer level;
     private String userId;
+    private String username;
+    private String size;
     private Long createTime;
     private Long updateTime;
     private Integer deleteFlag;

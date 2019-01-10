@@ -27,6 +27,8 @@ public class ImageProvider {
                 VALUES("level", "#{level}");
                 VALUES("open", "#{open}");
                 VALUES("user_id", "#{userId}");
+                VALUES("username", "#{username}");
+                VALUES("size", "#{size}");
                 VALUES("create_time", "#{createTime}");
                 VALUES("update_time", "#{updateTime}");
                 VALUES("delete_flag", "#{deleteFlag}");
@@ -57,7 +59,7 @@ public class ImageProvider {
     public String openAppList(Map<String, Object> params) {
         return new SQL() {
             {
-                SELECT("id", "name", "type", "version", "description", "image", "photo", "open", "level", "user_id", "create_time");
+                SELECT("id", "name", "type", "version", "description", "image", "photo", "open", "level", "user_id", "username", "size", "create_time");
                 FROM("app_info");
                 WHERE("open=1", "delete_flag=0");
                 ORDER_BY("create_time desc");
@@ -68,7 +70,7 @@ public class ImageProvider {
     public String userAppList(Map<String, Object> params) {
         return new SQL() {
             {
-                SELECT("id", "name", "type", "version", "description", "image", "photo", "open", "level", "user_id", "create_time");
+                SELECT("id", "name", "type", "version", "description", "image", "photo", "open", "level", "user_id", "username", "size", "create_time");
                 FROM("app_info");
                 WHERE("user_id=#{userId}", "delete_flag=0");
                 ORDER_BY("create_time desc");
@@ -76,10 +78,10 @@ public class ImageProvider {
         }.toString() + "limit #{start},#{limit}";
     }
 
-    public String getById(String id){
-        return new SQL(){
+    public String getById(String id) {
+        return new SQL() {
             {
-                SELECT("id", "name", "type", "version", "description", "image", "photo", "open", "level", "user_id", "create_time");
+                SELECT("id", "name", "type", "version", "description", "image", "photo", "open", "level", "user_id", "username", "size", "create_time");
                 FROM("app_info");
                 WHERE("id=#{id}", "delete_flag=0");
             }
