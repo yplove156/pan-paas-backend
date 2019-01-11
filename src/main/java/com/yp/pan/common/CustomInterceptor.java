@@ -1,7 +1,9 @@
 package com.yp.pan.common;
 
 import com.alibaba.fastjson.JSONObject;
+import com.yp.pan.model.UserInfo;
 import com.yp.pan.util.ResponseEntity;
+import com.yp.pan.util.ThreadLocalUtil;
 import com.yp.pan.util.TokenUtil;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -47,7 +49,12 @@ public class CustomInterceptor implements HandlerInterceptor {
             response.getWriter().write(res);
             return false;
         }
-        datas.forEach(request::setAttribute);
+//        datas.forEach(request::setAttribute);
+        UserInfo userInfo = new UserInfo();
+        userInfo.setId(datas.get("userId"));
+        userInfo.setUsername(datas.get("username"));
+        userInfo.setRole(datas.get("role"));
+        ThreadLocalUtil.getInstance().bind(userInfo);
         return true;
     }
 }
