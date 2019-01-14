@@ -33,7 +33,6 @@ public class ThreadLocalUtil {
      */
     public UserInfo getUserInfo() {
         UserInfo userInfo = userInfoThreadLocal.get();
-        remove();
         return userInfo;
     }
 
