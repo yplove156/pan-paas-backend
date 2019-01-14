@@ -1,6 +1,8 @@
 package com.yp.pan.service;
 
+import com.yp.pan.dto.CreateUserDto;
 import com.yp.pan.model.UserInfo;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -12,9 +14,7 @@ import java.util.List;
  */
 public interface UserService {
 
-    UserInfo findByUsername(String username);
+    Object addUser( CreateUserDto userDto);
 
     List<UserInfo> userList();
-
-    int addUser(UserInfo userInfo);
 }

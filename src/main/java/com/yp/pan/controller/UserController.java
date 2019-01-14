@@ -1,22 +1,19 @@
 package com.yp.pan.controller;
 
 import com.yp.pan.annotation.RequireRole;
-import com.yp.pan.common.CustomEnum;
 import com.yp.pan.dto.CreateUserDto;
 import com.yp.pan.dto.UserInfoDto;
-import com.yp.pan.model.PwdInfo;
 import com.yp.pan.model.UserInfo;
-import com.yp.pan.service.PwdService;
 import com.yp.pan.service.UserService;
-import com.yp.pan.util.EncryptUtil;
-import com.yp.pan.util.ServerException;
-import com.yp.pan.util.UUIDUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * UserController class
@@ -29,46 +26,16 @@ import java.util.UUID;
 public class UserController {
 
     private final UserService userService;
-    private final PwdService pwdService;
 
     @Autowired
-    public UserController(UserService userService, PwdService pwdService) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.pwdService = pwdService;
     }
 
     @PutMapping
     @RequireRole("admin")
     public Object addUser(@RequestBody CreateUserDto userDto) {
-        String salt = UUIDUtil.getUUID(12);
-        String encryptPwd = EncryptUtil.encryptPwd(userDto.getPassword(), salt);
-        PwdInfo pwdInfo = new PwdInfo();
-        pwdInfo.setId(UUID.randomUUID().toString());
-        pwdInfo.setSalt(salt);
-        pwdInfo.setUsername(userDto.getUsername());
-        pwdInfo.setPassword(encryptPwd);
-        pwdInfo.setState("0");
-        pwdInfo.setCreateTime(System.currentTimeMillis());
-        pwdInfo.setUpdateTime(System.currentTimeMillis());
-        pwdInfo.setDeleteFlag(0);
-        int addPwd = pwdService.addPwd(pwdInfo);
-        if (addPwd == 1) {
-            UserInfo userInfo = new UserInfo();
-            userInfo.setId(UUID.randomUUID().toString());
-            userInfo.setUsername(userDto.getUsername());
-            userInfo.setNick(userDto.getNick());
-            userInfo.setPhoto(userDto.getPhoto());
-            userInfo.setRole(userDto.getRole());
-            userInfo.setName(userDto.getName());
-            userInfo.setPhone(userDto.getPhone());
-            userInfo.setPosition(userDto.getPosition());
-            userInfo.setCreateTime(System.currentTimeMillis());
-            userInfo.setUpdateTime(System.currentTimeMillis());
-            userInfo.setDeleteFlag(0);
-            userService.addUser(userInfo);
-            return userDto;
-        }
-        throw new ServerException(CustomEnum.ADD_USER_ERROR);
+        return userService.addUser(userDto);
     }
 
     @GetMapping

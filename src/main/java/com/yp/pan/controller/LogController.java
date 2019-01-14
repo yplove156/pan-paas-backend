@@ -16,8 +16,12 @@ import java.util.List;
 @RequestMapping("/logs")
 public class LogController {
 
+    private final LogService logService;
+
     @Autowired
-    private LogService logService;
+    public LogController(LogService logService) {
+        this.logService = logService;
+    }
 
     @GetMapping("/{page}")
     public Object logList(@PathVariable Integer page) {

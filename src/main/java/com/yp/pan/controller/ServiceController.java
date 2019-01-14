@@ -5,6 +5,7 @@ import com.yp.pan.common.CustomEnum;
 import com.yp.pan.common.RoleEnum;
 import com.yp.pan.config.K8sClient;
 import com.yp.pan.service.ClusterService;
+import com.yp.pan.service.SVCService;
 import com.yp.pan.util.ServerException;
 import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.client.KubernetesClient;
@@ -20,36 +21,23 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/services")
 public class ServiceController {
 
+    private final SVCService svcService;
+
     @Autowired
-    private ClusterService clusterService;
+    public ServiceController(SVCService svcService) {
+        this.svcService = svcService;
+    }
 
     @GetMapping
     public Object services() {
-        KubernetesClient client = K8sClient.init(clusterService);
-        return client.services().list();
+        return svcService.services();
     }
 
     @DeleteMapping("/{namespace}/{name}")
     public Object deleteService(
             @PathVariable String namespace,
-            @PathVariable String name,
-            @RequestAttribute String role,
-            @RequestAttribute String userId) {
-        KubernetesClient client = K8sClient.init(clusterService);
-        Boolean delete = false;
-        if (RoleEnum.ADMIN.getRole().equals(role)) {
-            delete = client.configMaps().inNamespace(namespace).withName(name).delete();
-        } else {
-            ConfigMap configMap = client.configMaps().inNamespace(namespace).withName(name).get();
-            String owner = configMap.getMetadata().getAnnotations().get(CustomAnno.PAN_USER);
-            if (null != owner && owner.equals(userId)) {
-                delete = client.configMaps().inNamespace(namespace).withName(name).delete();
-            }
-        }
-        if (delete) {
-            return name;
-        }
-        throw new ServerException(CustomEnum.DELETE_SERVICE_ERROR);
+            @PathVariable String name) {
+        return svcService.deleteService(namespace, name);
     }
 
 }

@@ -2,6 +2,11 @@ package com.yp.pan.aspect;
 
 import com.sun.jndi.ldap.pool.PooledConnectionFactory;
 import com.yp.pan.annotation.RequireRole;
+import com.yp.pan.common.CustomEnum;
+import com.yp.pan.common.RoleEnum;
+import com.yp.pan.model.UserInfo;
+import com.yp.pan.util.ServerException;
+import com.yp.pan.util.ThreadLocalUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -23,7 +28,10 @@ public class RoleAop {
     @Around("@annotation(requireRole)")
     public Object around(ProceedingJoinPoint proceedingJoinPoint, RequireRole requireRole) throws Throwable {
         String value = requireRole.value();
-        System.out.println(value);
+        UserInfo userInfo = ThreadLocalUtil.getInstance().getUserInfo();
+        if (!userInfo.getRole().equals(value)) {
+            throw new ServerException(CustomEnum.NO_PERMISSION);
+        }
         return proceedingJoinPoint.proceed();
     }
 }
