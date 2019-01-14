@@ -37,13 +37,13 @@ public class CustomInterceptor implements HandlerInterceptor {
             response.getWriter().write(res);
             return false;
         }
-        Map<String, String> datas = TokenUtil.decodeToken(token);
-        if (datas == null) {
+        Map<String, String> data = TokenUtil.decodeToken(token);
+        if (data == null) {
             String res = JSONObject.toJSONString(ResponseEntity.getFail(CustomEnum.AUTH_FAILED.getCode(), CustomEnum.AUTH_FAILED.getMsg()));
             response.getWriter().write(res);
             return false;
         }
-        Long expireTime = Long.parseLong(datas.get("expireTime"));
+        Long expireTime = Long.parseLong(data.get("expireTime"));
         if (expireTime < System.currentTimeMillis()) {
             String res = JSONObject.toJSONString(ResponseEntity.getFail(CustomEnum.AUTH_FAILED.getCode(), CustomEnum.AUTH_FAILED.getMsg()));
             response.getWriter().write(res);
@@ -51,9 +51,9 @@ public class CustomInterceptor implements HandlerInterceptor {
         }
 //        datas.forEach(request::setAttribute);
         UserInfo userInfo = new UserInfo();
-        userInfo.setId(datas.get("userId"));
-        userInfo.setUsername(datas.get("username"));
-        userInfo.setRole(datas.get("role"));
+        userInfo.setId(data.get("userId"));
+        userInfo.setUsername(data.get("username"));
+        userInfo.setRole(data.get("role"));
         ThreadLocalUtil.getInstance().bind(userInfo);
         return true;
     }

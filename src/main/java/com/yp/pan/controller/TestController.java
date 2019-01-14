@@ -1,5 +1,6 @@
 package com.yp.pan.controller;
 
+import com.yp.pan.annotation.PanLog;
 import com.yp.pan.model.UserInfo;
 import com.yp.pan.service.ClusterService;
 import com.yp.pan.util.ThreadLocalUtil;
@@ -16,6 +17,7 @@ public class TestController {
     ClusterService clusterService;
 
     @RequestMapping("/test")
+    @PanLog("666")
     public Object test() {
         UserInfo userInfo = ThreadLocalUtil.getInstance().getUserInfo();
         return userInfo;

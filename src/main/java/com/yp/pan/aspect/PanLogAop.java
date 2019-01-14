@@ -4,15 +4,15 @@ import com.alibaba.fastjson.JSONObject;
 import com.yp.pan.annotation.PanLog;
 import com.yp.pan.common.CustomEnum;
 import com.yp.pan.model.LogInfo;
+import com.yp.pan.model.UserInfo;
 import com.yp.pan.service.LogService;
 import com.yp.pan.util.ServerException;
+import com.yp.pan.util.ThreadLocalUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -37,13 +37,11 @@ public class PanLogAop {
         LogInfo logInfo = new LogInfo();
         try {
             logInfo.setAction(panLog.value());
-            RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-            String username = (String) requestAttributes.getAttribute("username", RequestAttributes.SCOPE_REQUEST);
+            UserInfo userInfo = ThreadLocalUtil.getInstance().getUserInfo();
             logInfo.setId(UUID.randomUUID().toString());
-            logInfo.setUser(username);
+            logInfo.setUser(userInfo.getUsername());
             logInfo.setCreateTime(System.currentTimeMillis());
-        } catch (Exception e) {
-//            e.printStackTrace();
+        } catch (Exception ignored) {
         }
 
         try {
@@ -58,7 +56,6 @@ public class PanLogAop {
             CompletableFuture.runAsync(() -> logService.addLog(logInfo));
             throw e;
         } catch (Throwable throwable) {
-            throwable.printStackTrace();
             logInfo.setStatus(0);
             logInfo.setException(throwable.getClass().getSimpleName());
             logInfo.setCode(CustomEnum.COMMON_EXCEPTION.getCode());
