@@ -6,6 +6,9 @@ import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.annotations.UpdateProvider;
+
+import java.util.Map;
 
 /**
  * PwdMapper class
@@ -25,4 +28,7 @@ public interface PwdMapper {
 
     @InsertProvider(type = PwdProvider.class, method = "addPwd")
     int addPwd(PwdInfo pwdInfo);
+
+    @UpdateProvider(type = PwdProvider.class, method = "updatePwd")
+    int updatePwd(Map<String, String> params);
 }

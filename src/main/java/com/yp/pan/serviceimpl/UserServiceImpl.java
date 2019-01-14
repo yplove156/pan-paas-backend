@@ -2,6 +2,7 @@ package com.yp.pan.serviceimpl;
 
 import com.yp.pan.common.CustomEnum;
 import com.yp.pan.dto.CreateUserDto;
+import com.yp.pan.dto.PwdDto;
 import com.yp.pan.mapper.PwdMapper;
 import com.yp.pan.mapper.UserMapper;
 import com.yp.pan.model.PwdInfo;
@@ -9,11 +10,14 @@ import com.yp.pan.model.UserInfo;
 import com.yp.pan.service.UserService;
 import com.yp.pan.util.EncryptUtil;
 import com.yp.pan.util.ServerException;
+import com.yp.pan.util.ThreadLocalUtil;
 import com.yp.pan.util.UUIDUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -72,6 +76,27 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserInfo> userList() {
         return userMapper.userList();
+    }
+
+    @Override
+    public Object updatePwd(PwdDto pwdDto) {
+        UserInfo userInfo = ThreadLocalUtil.getInstance().getUserInfo();
+        PwdInfo pwdInfo = pwdMapper.findByUsername(userInfo.getUsername());
+        if (pwdInfo == null) {
+            throw new ServerException(CustomEnum.UPDATE_PWD_ERROR);
+        }
+        String pwd = EncryptUtil.encryptPwd(pwdDto.getPwd(), pwdInfo.getSalt());
+        if (pwdInfo.getPassword().equals(pwd)) {
+            Map<String, String> params = new HashMap<>();
+            String newPwd = EncryptUtil.encryptPwd(pwdDto.getNewPwd(), pwdInfo.getSalt());
+            params.put("username", userInfo.getUsername());
+            params.put("password", newPwd);
+            int res = pwdMapper.updatePwd(params);
+            if (res == 1) {
+                return res;
+            }
+        }
+        throw new ServerException(CustomEnum.UPDATE_PWD_ERROR);
     }
 
 }

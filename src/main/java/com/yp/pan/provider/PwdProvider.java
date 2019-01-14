@@ -3,6 +3,8 @@ package com.yp.pan.provider;
 import com.yp.pan.model.PwdInfo;
 import org.apache.ibatis.jdbc.SQL;
 
+import java.util.Map;
+
 /**
  * PwdProvider class
  *
@@ -36,6 +38,17 @@ public class PwdProvider {
                 VALUES("create_time", "#{createTime}");
                 VALUES("update_time", "#{updateTime}");
                 VALUES("delete_flag", "#{deleteFlag}");
+            }
+        }.toString();
+    }
+
+    public String updatePwd(Map<String, String> params) {
+        return new SQL() {
+            {
+                UPDATE("pwd_info");
+                SET("password=#{password}");
+                WHERE("username=#{username}");
+                WHERE("delete_flag=0");
             }
         }.toString();
     }

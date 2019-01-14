@@ -43,6 +43,9 @@ public enum CustomEnum {
 
     DELETE_SERVICE_ERROR("DELETE_SERVICE_ERROR", "删除Service失败"),
 
+    NEW_PWD_NOT_EQUALS("NEW_PWD_NOT_EQUALS", "新密码不相同"),
+    UPDATE_PWD_ERROR("UPDATE_PWD_ERROR", "修改密码失败"),
+
     /**
      * 出现未知异常
      */
