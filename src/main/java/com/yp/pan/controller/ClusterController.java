@@ -29,12 +29,12 @@ public class ClusterController {
         this.clusterService = clusterService;
     }
 
-    @PutMapping
+    @PostMapping
     public Object addCluster(@RequestBody ClusterInfoDto clusterInfoDto) {
         return clusterService.addCluster(clusterInfoDto);
     }
 
-    @PostMapping
+    @PutMapping
     public Object updateCluster(@RequestBody ClusterInfoDto clusterInfoDto) {
         return clusterService.updateCluster(clusterInfoDto);
     }

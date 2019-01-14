@@ -23,9 +23,9 @@ public interface ImageService {
 
     List<ImageDto> userAppList(String userId, int start, int limit);
 
-    int deleteApp(String id);
+    String deleteApp(String id);
 
-    int update(ImageInfo imageInfo);
+    String update(ImageInfo imageInfo);
 
     ImageInfo getById(String id);
 }

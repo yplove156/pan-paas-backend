@@ -3,7 +3,6 @@ package com.yp.pan.controller;
 import com.yp.pan.annotation.PanLog;
 import com.yp.pan.common.CustomEnum;
 import com.yp.pan.common.LogCode;
-import com.yp.pan.common.RoleEnum;
 import com.yp.pan.dto.ImageDto;
 import com.yp.pan.model.ImageInfo;
 import com.yp.pan.service.ImageService;
@@ -11,11 +10,17 @@ import com.yp.pan.util.Page;
 import com.yp.pan.util.ServerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * ImageController class
@@ -27,24 +32,17 @@ import java.util.UUID;
 @RequestMapping("/images")
 public class ImageController {
 
-    private final ImageService applicationService;
+    private final ImageService imageService;
 
     @Autowired
-    public ImageController(ImageService applicationService) {
-        this.applicationService = applicationService;
+    public ImageController(ImageService imageService) {
+        this.imageService = imageService;
     }
 
-    @PutMapping
+    @PostMapping
     @PanLog(value = LogCode.ADD_IMAGE)
-    public Object addApplication(
-            @RequestBody ImageInfo imageInfo,
-            @RequestAttribute String userId) {
-        imageInfo.setId(UUID.randomUUID().toString());
-        imageInfo.setUserId(userId);
-        imageInfo.setCreateTime(System.currentTimeMillis());
-        imageInfo.setUpdateTime(System.currentTimeMillis());
-        imageInfo.setDeleteFlag(0);
-        int application = applicationService.addApplication(imageInfo);
+    public Object addApplication(@RequestBody ImageInfo imageInfo) {
+        int application = imageService.addApplication(imageInfo);
         if (application == 1) {
             return imageInfo;
         }
@@ -52,90 +50,53 @@ public class ImageController {
     }
 
     @GetMapping("/{page}")
-    @PanLog(value = LogCode.GET_PUBLIC_IMAGES)
-    public Object openAppList(@PathVariable Integer page) {
+    public Object pubilcImageList(@PathVariable Integer page) {
         if (page == null || page < 1) {
             page = 1;
         }
         int limit = 20;
-        int total = applicationService.openAppNo();
+        int total = imageService.openAppNo();
         if (total == 0) {
             return new Page<ImageDto>(page, limit, 0, total, new ArrayList<>()) {
             };
         }
         int start = (page - 1) * limit;
         int totalPage = (total + limit - 1) / limit;
-        List<ImageDto> list = applicationService.openAppList(start, limit);
+        List<ImageDto> list = imageService.openAppList(start, limit);
         return new Page<ImageDto>(page, limit, totalPage, total, list) {
         };
     }
 
     @GetMapping("/user/{page}")
-    @PanLog("查看私有应用列表")
-    public Object openAppList(@RequestAttribute String userId, @PathVariable Integer page) {
+    public Object privateImageList(@RequestAttribute String userId, @PathVariable Integer page) {
         if (page == null || page < 1) {
             page = 1;
         }
         int limit = 20;
-        int total = applicationService.userAppNo(userId);
+        int total = imageService.userAppNo(userId);
         if (total == 0) {
             return new Page<ImageDto>(page, limit, 0, total, new ArrayList<>()) {
             };
         }
         int start = (page - 1) * limit;
         int totalPage = (total + limit - 1) / limit;
-        List<ImageDto> list = applicationService.userAppList(userId, start, limit);
+        List<ImageDto> list = imageService.userAppList(userId, start, limit);
         return new Page<ImageDto>(page, limit, totalPage, total, list) {
         };
     }
 
     @DeleteMapping("/{id}")
-    @PanLog("删除应用市场应用")
-    public Object deleteApp(
-            @PathVariable String id,
-            @RequestAttribute String userId,
-            @RequestAttribute String role) {
+    @PanLog(LogCode.DELETE_IMAGE)
+    public Object deleteApp(@PathVariable String id) {
         if (StringUtils.isEmpty(id)) {
             throw new ServerException(CustomEnum.DELETE_IMAGE_ERROR);
         }
-        ImageInfo imageInfo = applicationService.getById(id);
-        int res = 0;
-        if (RoleEnum.ADMIN.getRole().equals(role)) {
-            res = applicationService.deleteApp(id);
-            if (res == 1) {
-                return id;
-            }
-            throw new ServerException(CustomEnum.DELETE_IMAGE_ERROR);
-        }
-        if (imageInfo == null || !userId.equals(imageInfo.getUserId())) {
-            throw new ServerException(CustomEnum.NO_PERMISSION);
-        }
-        res = applicationService.deleteApp(id);
-        if (res == 1) {
-            return id;
-        }
-        throw new ServerException(CustomEnum.DELETE_IMAGE_ERROR);
+        return imageService.deleteApp(id);
     }
 
     @PostMapping
-    @PanLog("更新应用市场应用")
-    public Object updateApp(
-            @RequestBody ImageInfo imageInfo,
-            @RequestAttribute String userId,
-            @RequestAttribute String role) {
-        ImageInfo info = applicationService.getById(imageInfo.getId());
-        if (info == null) {
-            throw new ServerException(CustomEnum.UPDATE_IMAGE_ERROR);
-        }
-        if (RoleEnum.ADMIN.getRole().equals(role)) {
-            applicationService.update(imageInfo);
-            return imageInfo.getId();
-        }
-        if (userId.equals(info.getUserId())) {
-            applicationService.update(imageInfo);
-        } else {
-            throw new ServerException(CustomEnum.NO_PERMISSION);
-        }
-        return imageInfo.getId();
+    @PanLog(LogCode.EDIT_IMAGE)
+    public Object updateApp(@RequestBody ImageInfo imageInfo) {
+        return imageService.update(imageInfo);
     }
 }

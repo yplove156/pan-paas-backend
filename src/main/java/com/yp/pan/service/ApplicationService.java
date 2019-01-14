@@ -9,9 +9,9 @@ public interface ApplicationService {
 
     String deploy(DeployDto deployDto);
 
-    String stopApp(StopAppDto appDto, String userId, String role);
+    String stopApp(StopAppDto appDto);
 
-    String startApp(StartAppDto appDto, String userId, String role);
+    String startApp(StartAppDto appDto);
 
-    String deleteApp(DeleteAppDto appDto, String userId, String role);
+    String deleteApp(DeleteAppDto appDto);
 }

@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,8 +19,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/application")
 public class ApplicationController {
 
+    private final ApplicationService applicationService;
+
     @Autowired
-    private ApplicationService applicationService;
+    public ApplicationController(ApplicationService applicationService) {
+        this.applicationService = applicationService;
+    }
 
     @PostMapping
     public Object deploy(@RequestBody DeployDto deployDto) {
@@ -32,32 +35,26 @@ public class ApplicationController {
     }
 
     @PutMapping("/stop")
-    public Object stopApp(@RequestBody StopAppDto appDto,
-                          @RequestAttribute String userId,
-                          @RequestAttribute String role) {
+    public Object stopApp(@RequestBody StopAppDto appDto) {
         if (StringUtils.isEmpty(appDto.getName()) || StringUtils.isEmpty(appDto.getNamespace())) {
             throw new ServerException(CustomEnum.STOP_APPLICATION_ERROR);
         }
-        return applicationService.stopApp(appDto, userId, role);
+        return applicationService.stopApp(appDto);
     }
 
     @PutMapping("/start")
-    public Object startApp(@RequestBody StartAppDto appDto,
-                          @RequestAttribute String userId,
-                          @RequestAttribute String role) {
+    public Object startApp(@RequestBody StartAppDto appDto) {
         if (StringUtils.isEmpty(appDto.getName()) || StringUtils.isEmpty(appDto.getNamespace())) {
             throw new ServerException(CustomEnum.START_APPLICATION_ERROR);
         }
-        return applicationService.startApp(appDto, userId, role);
+        return applicationService.startApp(appDto);
     }
 
     @PutMapping("/delete")
-    public Object deleteApp(@RequestBody DeleteAppDto appDto,
-                            @RequestAttribute String userId,
-                            @RequestAttribute String role){
+    public Object deleteApp(@RequestBody DeleteAppDto appDto){
         if (StringUtils.isEmpty(appDto.getName()) || StringUtils.isEmpty(appDto.getNamespace())) {
             throw new ServerException(CustomEnum.START_APPLICATION_ERROR);
         }
-        return applicationService.deleteApp(appDto, userId, role);
+        return applicationService.deleteApp(appDto);
     }
 }

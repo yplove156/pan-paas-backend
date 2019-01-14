@@ -9,10 +9,12 @@ import com.yp.pan.dto.DeployDto;
 import com.yp.pan.dto.StartAppDto;
 import com.yp.pan.dto.StopAppDto;
 import com.yp.pan.model.ImageInfo;
+import com.yp.pan.model.UserInfo;
 import com.yp.pan.service.ApplicationService;
 import com.yp.pan.service.ClusterService;
 import com.yp.pan.service.ImageService;
 import com.yp.pan.util.ServerException;
+import com.yp.pan.util.ThreadLocalUtil;
 import io.fabric8.kubernetes.api.model.Container;
 import io.fabric8.kubernetes.api.model.ContainerPort;
 import io.fabric8.kubernetes.api.model.LabelSelector;
@@ -58,11 +60,12 @@ public class ApplicationServiceImpl implements ApplicationService {
         meta.setName(imageInfo.getName());
 
         Map<String, String> labels = new HashMap<>();
-        labels.put("app", imageInfo.getName());
+        labels.put(CustomAnno.PAN_APP, imageInfo.getName());
         meta.setLabels(labels);
 
         Map<String, String> annotations = new HashMap<>();
-        annotations.put(CustomAnno.PAN_USER, imageInfo.getUserId());
+        UserInfo userInfo = ThreadLocalUtil.getInstance().getUserInfo();
+        annotations.put(CustomAnno.PAN_USER, userInfo.getId());
         annotations.put(CustomAnno.PAN_DESC, imageInfo.getDescription());
         meta.setAnnotations(annotations);
 
@@ -109,7 +112,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public String stopApp(StopAppDto appDto, String userId, String role) {
+    public String stopApp(StopAppDto appDto) {
         KubernetesClient client = K8sClient.init(clusterService);
         Deployment deployment = client.apps().deployments()
                 .inNamespace(appDto.getNamespace())
@@ -117,7 +120,8 @@ public class ApplicationServiceImpl implements ApplicationService {
         if (null == deployment) {
             throw new ServerException(CustomEnum.STOP_APPLICATION_ERROR);
         }
-        if (role.equals(RoleEnum.ADMIN.getRole())) {
+        UserInfo userInfo = ThreadLocalUtil.getInstance().getUserInfo();
+        if (userInfo.getRole().equals(RoleEnum.ADMIN.getRole())) {
             boolean res = stopApp(client, appDto);
             if (res) {
                 return appDto.getName();
@@ -125,7 +129,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             throw new ServerException(CustomEnum.STOP_APPLICATION_ERROR);
         }
         String ownerId = deployment.getMetadata().getAnnotations().get(CustomAnno.PAN_USER);
-        if (StringUtils.isEmpty(ownerId) || !ownerId.equals(userId)) {
+        if (StringUtils.isEmpty(ownerId) || !ownerId.equals(userInfo.getId())) {
             throw new ServerException(CustomEnum.NO_PERMISSION);
         } else {
             boolean res = stopApp(client, appDto);
@@ -137,7 +141,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public String startApp(StartAppDto appDto, String userId, String role) {
+    public String startApp(StartAppDto appDto) {
         KubernetesClient client = K8sClient.init(clusterService);
         Deployment deployment = client.apps().deployments()
                 .inNamespace(appDto.getNamespace())
@@ -145,7 +149,8 @@ public class ApplicationServiceImpl implements ApplicationService {
         if (null == deployment) {
             throw new ServerException(CustomEnum.START_APPLICATION_ERROR);
         }
-        if (role.equals(RoleEnum.ADMIN.getRole())) {
+        UserInfo userInfo = ThreadLocalUtil.getInstance().getUserInfo();
+        if (userInfo.getRole().equals(RoleEnum.ADMIN.getRole())) {
             boolean res = startApp(client, appDto);
             if (res) {
                 return appDto.getName();
@@ -153,7 +158,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             throw new ServerException(CustomEnum.START_APPLICATION_ERROR);
         }
         String ownerId = deployment.getMetadata().getAnnotations().get(CustomAnno.PAN_USER);
-        if (StringUtils.isEmpty(ownerId) || !ownerId.equals(userId)) {
+        if (StringUtils.isEmpty(ownerId) || !ownerId.equals(userInfo.getId())) {
             throw new ServerException(CustomEnum.NO_PERMISSION);
         } else {
             boolean res = startApp(client, appDto);
@@ -165,7 +170,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public String deleteApp(DeleteAppDto appDto, String userId, String role) {
+    public String deleteApp(DeleteAppDto appDto) {
         KubernetesClient client = K8sClient.init(clusterService);
         Deployment deployment = client.apps().deployments()
                 .inNamespace(appDto.getNamespace())
@@ -173,7 +178,8 @@ public class ApplicationServiceImpl implements ApplicationService {
         if (null == deployment) {
             throw new ServerException(CustomEnum.START_APPLICATION_ERROR);
         }
-        if (role.equals(RoleEnum.ADMIN.getRole())) {
+        UserInfo userInfo = ThreadLocalUtil.getInstance().getUserInfo();
+        if (userInfo.getRole().equals(RoleEnum.ADMIN.getRole())) {
             boolean res = deleteApp(client, appDto);
             if (res) {
                 return appDto.getName();
@@ -181,7 +187,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             throw new ServerException(CustomEnum.START_APPLICATION_ERROR);
         }
         String ownerId = deployment.getMetadata().getAnnotations().get(CustomAnno.PAN_USER);
-        if (StringUtils.isEmpty(ownerId) || !ownerId.equals(userId)) {
+        if (StringUtils.isEmpty(ownerId) || !ownerId.equals(userInfo.getId())) {
             throw new ServerException(CustomEnum.NO_PERMISSION);
         } else {
             boolean res = deleteApp(client, appDto);

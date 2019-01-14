@@ -4,6 +4,7 @@ import com.yp.pan.common.CustomAnno;
 import com.yp.pan.common.CustomEnum;
 import com.yp.pan.config.K8sClient;
 import com.yp.pan.service.ClusterService;
+import com.yp.pan.service.ConfigMapService;
 import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.api.model.ConfigMapList;
 import io.fabric8.kubernetes.api.model.ObjectMeta;
@@ -23,27 +24,21 @@ import java.util.Map;
 @RequestMapping("/config-map")
 public class ConfigMapController {
 
+    private final ConfigMapService clusterService;
+
     @Autowired
-    private ClusterService clusterService;
+    public ConfigMapController(ConfigMapService clusterService) {
+        this.clusterService = clusterService;
+    }
 
     @GetMapping
     public Object configMapList() {
-        KubernetesClient client = K8sClient.init(clusterService);
-        return client.configMaps().list();
+        return clusterService.configMapList();
     }
 
     @PostMapping
     public Object createConfigMap(
-            @RequestBody Map<String, String> data,
-            @RequestAttribute String userId) {
-        KubernetesClient client = K8sClient.init(clusterService);
-        ConfigMap configMap = new ConfigMap();
-        ObjectMeta meta = new ObjectMeta();
-        Map<String, String> annotations = new HashMap<>();
-        annotations.put(CustomAnno.PAN_USER, userId);
-        meta.setAnnotations(annotations);
-        configMap.setMetadata(meta);
-        configMap.setData(data);
-        return client.configMaps().inNamespace("").createOrReplace(configMap);
+            @RequestBody Map<String, String> data) {
+        return clusterService.createConfigMap(data);
     }
 }
