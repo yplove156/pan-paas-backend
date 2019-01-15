@@ -39,6 +39,7 @@ public class ImageServiceImpl implements ImageService {
         imageInfo.setId(UUID.randomUUID().toString());
         UserInfo userInfo = ThreadLocalUtil.getInstance().getUserInfo();
         imageInfo.setUserId(userInfo.getId());
+        imageInfo.setUsername(userInfo.getUsername());
         imageInfo.setCreateTime(System.currentTimeMillis());
         imageInfo.setUpdateTime(System.currentTimeMillis());
         imageInfo.setDeleteFlag(0);

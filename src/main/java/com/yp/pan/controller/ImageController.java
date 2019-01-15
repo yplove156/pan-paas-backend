@@ -5,19 +5,14 @@ import com.yp.pan.common.CustomEnum;
 import com.yp.pan.common.LogCode;
 import com.yp.pan.dto.ImageDto;
 import com.yp.pan.model.ImageInfo;
+import com.yp.pan.model.UserInfo;
 import com.yp.pan.service.ImageService;
 import com.yp.pan.util.Page;
 import com.yp.pan.util.ServerException;
+import com.yp.pan.util.ThreadLocalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +44,7 @@ public class ImageController {
         throw new ServerException(CustomEnum.ADD_IMAGE_ERROR);
     }
 
-    @GetMapping("/{page}")
+    @GetMapping("/public/{page}")
     public Object pubilcImageList(@PathVariable Integer page) {
         if (page == null || page < 1) {
             page = 1;
@@ -67,20 +62,21 @@ public class ImageController {
         };
     }
 
-    @GetMapping("/user/{page}")
-    public Object privateImageList(@RequestAttribute String userId, @PathVariable Integer page) {
+    @GetMapping("/private/{page}")
+    public Object privateImageList(@PathVariable Integer page) {
         if (page == null || page < 1) {
             page = 1;
         }
         int limit = 20;
-        int total = imageService.userAppNo(userId);
+        UserInfo userInfo = ThreadLocalUtil.getInstance().getUserInfo();
+        int total = imageService.userAppNo(userInfo.getId());
         if (total == 0) {
             return new Page<ImageDto>(page, limit, 0, total, new ArrayList<>()) {
             };
         }
         int start = (page - 1) * limit;
         int totalPage = (total + limit - 1) / limit;
-        List<ImageDto> list = imageService.userAppList(userId, start, limit);
+        List<ImageDto> list = imageService.userAppList(userInfo.getId(), start, limit);
         return new Page<ImageDto>(page, limit, totalPage, total, list) {
         };
     }
@@ -94,7 +90,7 @@ public class ImageController {
         return imageService.deleteApp(id);
     }
 
-    @PostMapping
+    @PutMapping
     @PanLog(LogCode.EDIT_IMAGE)
     public Object updateApp(@RequestBody ImageInfo imageInfo) {
         return imageService.update(imageInfo);
