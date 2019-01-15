@@ -43,12 +43,12 @@ public class ImageServiceImpl implements ImageService {
         imageInfo.setCreateTime(System.currentTimeMillis());
         imageInfo.setUpdateTime(System.currentTimeMillis());
         imageInfo.setDeleteFlag(0);
-        return imageMapper.addApplication(imageInfo);
+        return imageMapper.addImage(imageInfo);
     }
 
     @Override
     public int openAppNo() {
-        return imageMapper.openAppNo();
+        return imageMapper.publicImageNo();
     }
 
     @Override
@@ -56,12 +56,12 @@ public class ImageServiceImpl implements ImageService {
         Map<String, Object> params = new HashMap<>();
         params.put("start", start);
         params.put("limit", limit);
-        return imageMapper.openAppList(params);
+        return imageMapper.publicImages(params);
     }
 
     @Override
     public int userAppNo(String userId) {
-        return imageMapper.userAppNo(userId);
+        return imageMapper.privateImageNo(userId);
     }
 
     @Override
@@ -70,16 +70,16 @@ public class ImageServiceImpl implements ImageService {
         params.put("userId", userId);
         params.put("start", start);
         params.put("limit", limit);
-        return imageMapper.userAppList(params);
+        return imageMapper.privateImages(params);
     }
 
     @Override
     public String deleteApp(String id) {
-        ImageInfo imageInfo = imageMapper.getById(id);
+        ImageInfo imageInfo = imageMapper.findById(id);
         int res = 0;
         UserInfo userInfo = ThreadLocalUtil.getInstance().getUserInfo();
         if (RoleEnum.ADMIN.getRole().equals(userInfo.getRole())) {
-            res = imageMapper.deleteApp(id);
+            res = imageMapper.delete(id);
             if (res == 1) {
                 return id;
             }
@@ -88,7 +88,7 @@ public class ImageServiceImpl implements ImageService {
         if (imageInfo == null || !userInfo.getId().equals(imageInfo.getUserId())) {
             throw new ServerException(CustomEnum.NO_PERMISSION);
         }
-        res = imageMapper.deleteApp(id);
+        res = imageMapper.delete(id);
         if (res == 1) {
             return id;
         }
@@ -97,7 +97,7 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public String update(ImageInfo imageInfo) {
-        ImageInfo info = imageMapper.getById(imageInfo.getId());
+        ImageInfo info = imageMapper.findById(imageInfo.getId());
         if (info == null) {
             throw new ServerException(CustomEnum.UPDATE_IMAGE_ERROR);
         }
@@ -116,6 +116,6 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public ImageInfo getById(String id) {
-        return imageMapper.getById(id);
+        return imageMapper.findById(id);
     }
 }

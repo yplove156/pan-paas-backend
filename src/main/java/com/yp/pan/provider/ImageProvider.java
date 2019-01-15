@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public class ImageProvider {
 
-    public String addApplication(ImageInfo imageInfo) {
+    public String addImage(ImageInfo imageInfo) {
         return new SQL() {
             {
                 INSERT_INTO("app_info");
@@ -36,7 +36,7 @@ public class ImageProvider {
         }.toString();
     }
 
-    public String openAppNo() {
+    public String publicImageNo() {
         return new SQL() {
             {
                 SELECT("count(1)");
@@ -46,7 +46,7 @@ public class ImageProvider {
         }.toString();
     }
 
-    public String userAppNo(String userId) {
+    public String privateImageNo(String userId) {
         return new SQL() {
             {
                 SELECT("count(1)");
@@ -56,7 +56,7 @@ public class ImageProvider {
         }.toString();
     }
 
-    public String openAppList(Map<String, Object> params) {
+    public String publicImages(Map<String, Object> params) {
         return new SQL() {
             {
                 SELECT("id", "name", "type", "version", "description", "image", "photo", "open", "level", "user_id", "username", "size", "create_time");
@@ -67,7 +67,7 @@ public class ImageProvider {
         }.toString() + " limit #{start},#{limit}";
     }
 
-    public String userAppList(Map<String, Object> params) {
+    public String privateImages(Map<String, Object> params) {
         return new SQL() {
             {
                 SELECT("id", "name", "type", "version", "description", "image", "photo", "open", "level", "user_id", "username", "size", "create_time");
@@ -78,7 +78,7 @@ public class ImageProvider {
         }.toString() + "limit #{start},#{limit}";
     }
 
-    public String getById(String id) {
+    public String findById(String id) {
         return new SQL() {
             {
                 SELECT("id", "name", "type", "version", "description", "image", "photo", "open", "level", "user_id", "username", "size", "create_time");
@@ -88,7 +88,7 @@ public class ImageProvider {
         }.toString();
     }
 
-    public String deleteApp(String id) {
+    public String delete(String id) {
         return new SQL() {
             {
                 UPDATE("app_info");
