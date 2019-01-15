@@ -37,7 +37,7 @@ public class ImageController {
     @PostMapping
     @PanLog(value = LogCode.ADD_IMAGE)
     public Object addApplication(@RequestBody ImageInfo imageInfo) {
-        int application = imageService.addApplication(imageInfo);
+        int application = imageService.create(imageInfo);
         if (application == 1) {
             return imageInfo;
         }
@@ -50,14 +50,14 @@ public class ImageController {
             page = 1;
         }
         int limit = 20;
-        int total = imageService.openAppNo();
+        int total = imageService.publicImageNo();
         if (total == 0) {
             return new Page<ImageDto>(page, limit, 0, total, new ArrayList<>()) {
             };
         }
         int start = (page - 1) * limit;
         int totalPage = (total + limit - 1) / limit;
-        List<ImageDto> list = imageService.openAppList(start, limit);
+        List<ImageDto> list = imageService.publicImages(start, limit);
         return new Page<ImageDto>(page, limit, totalPage, total, list) {
         };
     }
@@ -69,14 +69,14 @@ public class ImageController {
         }
         int limit = 20;
         UserInfo userInfo = ThreadLocalUtil.getInstance().getUserInfo();
-        int total = imageService.userAppNo(userInfo.getId());
+        int total = imageService.privateImageNo(userInfo.getId());
         if (total == 0) {
             return new Page<ImageDto>(page, limit, 0, total, new ArrayList<>()) {
             };
         }
         int start = (page - 1) * limit;
         int totalPage = (total + limit - 1) / limit;
-        List<ImageDto> list = imageService.userAppList(userInfo.getId(), start, limit);
+        List<ImageDto> list = imageService.privateImages(userInfo.getId(), start, limit);
         return new Page<ImageDto>(page, limit, totalPage, total, list) {
         };
     }
@@ -87,12 +87,17 @@ public class ImageController {
         if (StringUtils.isEmpty(id)) {
             throw new ServerException(CustomEnum.DELETE_IMAGE_ERROR);
         }
-        return imageService.deleteApp(id);
+        return imageService.delete(id);
     }
 
     @PutMapping
     @PanLog(LogCode.EDIT_IMAGE)
     public Object updateApp(@RequestBody ImageInfo imageInfo) {
         return imageService.update(imageInfo);
+    }
+
+    @GetMapping("/{id}")
+    public Object findById(@PathVariable String id) {
+        return imageService.findById(id);
     }
 }

@@ -13,19 +13,19 @@ import java.util.List;
  */
 public interface ImageService {
 
-    int addApplication(ImageInfo imageInfo);
+    int create(ImageInfo imageInfo);
 
-    int openAppNo();
+    int publicImageNo();
 
-    List<ImageDto> openAppList(int start, int limit);
+    List<ImageDto> publicImages(int start, int limit);
 
-    int userAppNo(String userId);
+    int privateImageNo(String userId);
 
-    List<ImageDto> userAppList(String userId, int start, int limit);
+    List<ImageDto> privateImages(String userId, int start, int limit);
 
-    String deleteApp(String id);
+    String delete(String id);
 
     String update(ImageInfo imageInfo);
 
-    ImageInfo getById(String id);
+    ImageInfo findById(String id);
 }

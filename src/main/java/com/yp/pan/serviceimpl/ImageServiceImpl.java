@@ -35,7 +35,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public int addApplication(ImageInfo imageInfo) {
+    public int create(ImageInfo imageInfo) {
         imageInfo.setId(UUID.randomUUID().toString());
         UserInfo userInfo = ThreadLocalUtil.getInstance().getUserInfo();
         imageInfo.setUserId(userInfo.getId());
@@ -47,12 +47,12 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public int openAppNo() {
+    public int publicImageNo() {
         return imageMapper.publicImageNo();
     }
 
     @Override
-    public List<ImageDto> openAppList(int start, int limit) {
+    public List<ImageDto> publicImages(int start, int limit) {
         Map<String, Object> params = new HashMap<>();
         params.put("start", start);
         params.put("limit", limit);
@@ -60,12 +60,12 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public int userAppNo(String userId) {
+    public int privateImageNo(String userId) {
         return imageMapper.privateImageNo(userId);
     }
 
     @Override
-    public List<ImageDto> userAppList(String userId, int start, int limit) {
+    public List<ImageDto> privateImages(String userId, int start, int limit) {
         Map<String, Object> params = new HashMap<>();
         params.put("userId", userId);
         params.put("start", start);
@@ -74,7 +74,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public String deleteApp(String id) {
+    public String delete(String id) {
         ImageInfo imageInfo = imageMapper.findById(id);
         int res = 0;
         UserInfo userInfo = ThreadLocalUtil.getInstance().getUserInfo();
@@ -115,7 +115,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public ImageInfo getById(String id) {
+    public ImageInfo findById(String id) {
         return imageMapper.findById(id);
     }
 }
