@@ -75,13 +75,13 @@ public class ImageProvider {
                 WHERE("user_id=#{userId}", "delete_flag=0");
                 ORDER_BY("create_time desc");
             }
-        }.toString() + "limit #{start},#{limit}";
+        }.toString() + " limit #{start},#{limit}";
     }
 
     public String findById(String id) {
         return new SQL() {
             {
-                SELECT("id", "name", "type", "version", "description", "image", "photo", "open", "level", "user_id", "username", "size", "create_time");
+                SELECT("id", "name", "type", "version", "description", "image", "photo", "open", "level", "username", "size", "create_time");
                 FROM("app_info");
                 WHERE("id=#{id}", "delete_flag=0");
             }

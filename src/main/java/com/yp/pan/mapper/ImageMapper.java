@@ -45,6 +45,9 @@ public interface ImageMapper {
     @UpdateProvider(type = ImageProvider.class, method = "update")
     int update(ImageInfo imageInfo);
 
+    @Results({
+            @Result(column = "create_time", property = "createTime")
+    })
     @SelectProvider(type = ImageProvider.class,method = "findById")
     ImageInfo findById(String id);
 }

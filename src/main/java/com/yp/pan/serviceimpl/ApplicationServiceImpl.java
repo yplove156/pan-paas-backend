@@ -50,7 +50,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public String deploy(DeployDto deployDto) {
         KubernetesClient client = K8sClient.init(clusterService);
-        ImageInfo imageInfo = imageService.getById(deployDto.getImageId());
+        ImageInfo imageInfo = imageService.findById(deployDto.getImageId());
         if (imageInfo == null) {
             throw new ServerException(CustomEnum.GET_IMAGE_ERROR);
         }
