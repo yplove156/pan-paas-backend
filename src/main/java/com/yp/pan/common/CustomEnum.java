@@ -46,6 +46,8 @@ public enum CustomEnum {
     NEW_PWD_NOT_EQUALS("NEW_PWD_NOT_EQUALS", "新密码不相同"),
     UPDATE_PWD_ERROR("UPDATE_PWD_ERROR", "修改密码失败"),
 
+    YAML_DEPLOY_ERROR("YAML_DEPLOY_ERROR", "Yaml部署失败"),
+
     /**
      * 出现未知异常
      */

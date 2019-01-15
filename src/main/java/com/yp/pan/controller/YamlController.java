@@ -1,8 +1,10 @@
 package com.yp.pan.controller;
 
 import com.yp.pan.annotation.RequireRole;
+import com.yp.pan.common.CustomEnum;
 import com.yp.pan.common.RoleEnum;
 import com.yp.pan.service.YamlService;
+import com.yp.pan.util.ServerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +26,11 @@ public class YamlController {
 
     @PostMapping("/deploy")
     @RequireRole("admin")
-    public Object deployYaml(MultipartFile file) throws IOException {
-        return yamlService.deployYaml(file.getInputStream());
+    public Object deployYaml(MultipartFile file) {
+        try {
+            return yamlService.deployYaml(file.getInputStream());
+        } catch (IOException e) {
+            throw new ServerException(CustomEnum.YAML_DEPLOY_ERROR);
+        }
     }
 }
