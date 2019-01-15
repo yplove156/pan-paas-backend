@@ -1,7 +1,9 @@
 package com.yp.pan.controller;
 
+import com.yp.pan.annotation.PanLog;
 import com.yp.pan.annotation.RequireRole;
 import com.yp.pan.common.CustomEnum;
+import com.yp.pan.common.LogCode;
 import com.yp.pan.dto.CreateUserDto;
 import com.yp.pan.dto.PwdDto;
 import com.yp.pan.dto.UserInfoDto;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import sun.rmi.runtime.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,8 +39,9 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PutMapping
+    @PostMapping
     @RequireRole("admin")
+    @PanLog(LogCode.ADD_USER_LOG)
     public Object addUser(@RequestBody CreateUserDto userDto) {
         return userService.addUser(userDto);
     }
@@ -62,6 +66,7 @@ public class UserController {
     }
 
     @PostMapping("/pwd")
+    @PanLog(LogCode.USER_PWD_LOG)
     public Object updatePwd(@RequestBody PwdDto pwdDto) {
         if (!pwdDto.getNewPwd().equals(pwdDto.getRePwd())) {
             throw new ServerException(CustomEnum.NEW_PWD_NOT_EQUALS);

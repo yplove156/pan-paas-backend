@@ -1,7 +1,9 @@
 package com.yp.pan.controller;
 
+import com.yp.pan.annotation.PanLog;
 import com.yp.pan.common.CustomAnno;
 import com.yp.pan.common.CustomEnum;
+import com.yp.pan.common.LogCode;
 import com.yp.pan.config.K8sClient;
 import com.yp.pan.service.ClusterService;
 import com.yp.pan.service.ConfigMapService;
@@ -37,6 +39,7 @@ public class ConfigMapController {
     }
 
     @PostMapping
+    @PanLog(LogCode.ADD_CONFIGMAP_LOG)
     public Object createConfigMap(
             @RequestBody Map<String, String> data) {
         return clusterService.createConfigMap(data);

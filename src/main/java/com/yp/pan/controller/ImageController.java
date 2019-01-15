@@ -35,7 +35,7 @@ public class ImageController {
     }
 
     @PostMapping
-    @PanLog(value = LogCode.ADD_IMAGE)
+    @PanLog(value = LogCode.ADD_IMAGE_LOG)
     public Object addApplication(@RequestBody ImageInfo imageInfo) {
         int application = imageService.create(imageInfo);
         if (application == 1) {
@@ -82,7 +82,7 @@ public class ImageController {
     }
 
     @DeleteMapping("/{id}")
-    @PanLog(LogCode.DELETE_IMAGE)
+    @PanLog(LogCode.DELETE_IMAGE_LOG)
     public Object deleteApp(@PathVariable String id) {
         if (StringUtils.isEmpty(id)) {
             throw new ServerException(CustomEnum.DELETE_IMAGE_ERROR);
@@ -91,7 +91,7 @@ public class ImageController {
     }
 
     @PutMapping
-    @PanLog(LogCode.EDIT_IMAGE)
+    @PanLog(LogCode.EDIT_IMAGE_LOG)
     public Object updateApp(@RequestBody ImageInfo imageInfo) {
         return imageService.update(imageInfo);
     }

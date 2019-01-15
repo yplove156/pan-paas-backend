@@ -1,7 +1,9 @@
 package com.yp.pan.controller;
 
+import com.yp.pan.annotation.PanLog;
 import com.yp.pan.common.CustomAnno;
 import com.yp.pan.common.CustomEnum;
+import com.yp.pan.common.LogCode;
 import com.yp.pan.common.RoleEnum;
 import com.yp.pan.config.K8sClient;
 import com.yp.pan.dto.NamespaceDto;
@@ -62,6 +64,7 @@ public class NamespaceController {
     }
 
     @PostMapping
+    @PanLog(LogCode.ADD_NAMESPACE_LOG)
     public Object addNamespace(@RequestBody NamespaceDto namespaceDto) {
         if (namespaceDto == null) {
             throw new ServerException(CustomEnum.NAMESPACE_CREATE_ERROR);
@@ -70,6 +73,7 @@ public class NamespaceController {
     }
 
     @DeleteMapping("/{name}")
+    @PanLog(LogCode.DELETE_NAMESPACE_LOG)
     public Object deleteNamespace(@PathVariable String name) {
         if (StringUtils.isEmpty(name)) {
             throw new ServerException(CustomEnum.NAMESPACE_DELETE_ERROR);

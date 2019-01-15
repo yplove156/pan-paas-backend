@@ -1,6 +1,8 @@
 package com.yp.pan.controller;
 
+import com.yp.pan.annotation.PanLog;
 import com.yp.pan.common.CustomEnum;
+import com.yp.pan.common.LogCode;
 import com.yp.pan.dto.ClusterInfoDto;
 import com.yp.pan.model.ClusterInfo;
 import com.yp.pan.service.ClusterService;
@@ -30,16 +32,19 @@ public class ClusterController {
     }
 
     @PostMapping
+    @PanLog(LogCode.ADD_CLUSTER_LOG)
     public Object addCluster(@RequestBody ClusterInfoDto clusterInfoDto) {
         return clusterService.addCluster(clusterInfoDto);
     }
 
     @PutMapping
+    @PanLog(LogCode.UPDATE_CLUSTER_LOG)
     public Object updateCluster(@RequestBody ClusterInfoDto clusterInfoDto) {
         return clusterService.updateCluster(clusterInfoDto);
     }
 
     @DeleteMapping("/{id}")
+    @PanLog(LogCode.DELETE_CLUSTER_LOG)
     public Object deleteClusterById(@PathVariable String id) {
         if (StringUtils.isEmpty(id)) {
             throw new ServerException(CustomEnum.DELETE_CLUSTER_ERROR);

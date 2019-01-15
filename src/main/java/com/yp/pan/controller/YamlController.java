@@ -1,7 +1,9 @@
 package com.yp.pan.controller;
 
+import com.yp.pan.annotation.PanLog;
 import com.yp.pan.annotation.RequireRole;
 import com.yp.pan.common.CustomEnum;
+import com.yp.pan.common.LogCode;
 import com.yp.pan.common.RoleEnum;
 import com.yp.pan.service.YamlService;
 import com.yp.pan.util.ServerException;
@@ -26,6 +28,7 @@ public class YamlController {
 
     @PostMapping("/deploy")
     @RequireRole("admin")
+    @PanLog(LogCode.DEPLOY_YAML_LOG)
     public Object deployYaml(MultipartFile file) {
         try {
             return yamlService.deployYaml(file.getInputStream());

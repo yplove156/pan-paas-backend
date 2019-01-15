@@ -1,7 +1,9 @@
 package com.yp.pan.controller;
 
+import com.yp.pan.annotation.PanLog;
 import com.yp.pan.common.CustomAnno;
 import com.yp.pan.common.CustomEnum;
+import com.yp.pan.common.LogCode;
 import com.yp.pan.common.RoleEnum;
 import com.yp.pan.config.K8sClient;
 import com.yp.pan.service.ClusterService;
@@ -34,6 +36,7 @@ public class ServiceController {
     }
 
     @DeleteMapping("/{namespace}/{name}")
+    @PanLog(LogCode.DELETE_SERVICE_LOG)
     public Object deleteService(
             @PathVariable String namespace,
             @PathVariable String name) {
