@@ -91,9 +91,18 @@ public class ApplicationController {
         return applicationService.deleteApp(appDto);
     }
 
+    /**
+     * 设置应用副本
+     *
+     * @param appReplicasDto
+     * @return
+     */
     @PutMapping("/replicas")
-    @PanLog(LogCode.DELETE_APP_LOG)
+    @PanLog(LogCode.UPDATE_APP_REPLICAS_LOG)
     public Object updateReplicas(@RequestBody AppReplicasDto appReplicasDto) {
-        return null;
+        if (StringUtils.isEmpty(appReplicasDto.getName()) || StringUtils.isEmpty(appReplicasDto.getNamespace())) {
+            throw new ServerException(CustomEnum.RESET_APPLICATION_REPLICAS_ERROR);
+        }
+        return applicationService.updateReplicas(appReplicasDto);
     }
 }
