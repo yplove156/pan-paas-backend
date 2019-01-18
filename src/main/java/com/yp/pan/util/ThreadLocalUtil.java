@@ -32,8 +32,7 @@ public class ThreadLocalUtil {
      * @return
      */
     public UserInfo getUserInfo() {
-        UserInfo userInfo = userInfoThreadLocal.get();
-        return userInfo;
+        return userInfoThreadLocal.get();
     }
 
     /**

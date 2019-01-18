@@ -4,6 +4,7 @@ import com.yp.pan.common.CustomAnno;
 import com.yp.pan.common.CustomEnum;
 import com.yp.pan.common.RoleEnum;
 import com.yp.pan.config.K8sClient;
+import com.yp.pan.dto.AppReplicasDto;
 import com.yp.pan.dto.DeleteAppDto;
 import com.yp.pan.dto.DeployDto;
 import com.yp.pan.dto.StartAppDto;
@@ -13,6 +14,7 @@ import com.yp.pan.model.UserInfo;
 import com.yp.pan.service.ApplicationService;
 import com.yp.pan.service.ClusterService;
 import com.yp.pan.service.ImageService;
+import com.yp.pan.util.RoleUtil;
 import com.yp.pan.util.ServerException;
 import com.yp.pan.util.ThreadLocalUtil;
 import io.fabric8.kubernetes.api.model.Container;
@@ -122,7 +124,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         }
         UserInfo userInfo = ThreadLocalUtil.getInstance().getUserInfo();
         if (userInfo.getRole().equals(RoleEnum.ADMIN.getRole())) {
-            boolean res = stopApp(client, appDto);
+            boolean res = stopDeployment(client, appDto);
             if (res) {
                 return appDto.getName();
             }
@@ -132,7 +134,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         if (StringUtils.isEmpty(ownerId) || !ownerId.equals(userInfo.getId())) {
             throw new ServerException(CustomEnum.NO_PERMISSION);
         } else {
-            boolean res = stopApp(client, appDto);
+            boolean res = stopDeployment(client, appDto);
             if (res) {
                 return appDto.getName();
             }
@@ -151,7 +153,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         }
         UserInfo userInfo = ThreadLocalUtil.getInstance().getUserInfo();
         if (userInfo.getRole().equals(RoleEnum.ADMIN.getRole())) {
-            boolean res = startApp(client, appDto);
+            boolean res = startDeployment(client, appDto);
             if (res) {
                 return appDto.getName();
             }
@@ -161,7 +163,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         if (StringUtils.isEmpty(ownerId) || !ownerId.equals(userInfo.getId())) {
             throw new ServerException(CustomEnum.NO_PERMISSION);
         } else {
-            boolean res = startApp(client, appDto);
+            boolean res = startDeployment(client, appDto);
             if (res) {
                 return appDto.getName();
             }
@@ -180,7 +182,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         }
         UserInfo userInfo = ThreadLocalUtil.getInstance().getUserInfo();
         if (userInfo.getRole().equals(RoleEnum.ADMIN.getRole())) {
-            boolean res = deleteApp(client, appDto);
+            boolean res = deleteDeployment(client, appDto);
             if (res) {
                 return appDto.getName();
             }
@@ -190,7 +192,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         if (StringUtils.isEmpty(ownerId) || !ownerId.equals(userInfo.getId())) {
             throw new ServerException(CustomEnum.NO_PERMISSION);
         } else {
-            boolean res = deleteApp(client, appDto);
+            boolean res = deleteDeployment(client, appDto);
             if (res) {
                 return appDto.getName();
             }
@@ -198,7 +200,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         }
     }
 
-    private boolean stopApp(KubernetesClient client, StopAppDto appDto) {
+    private boolean stopDeployment(KubernetesClient client, StopAppDto appDto) {
         Deployment stop = client.apps().deployments()
                 .inNamespace(appDto.getNamespace())
                 .withName(appDto.getName())
@@ -210,7 +212,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         return stop != null;
     }
 
-    private boolean startApp(KubernetesClient client, StartAppDto appDto) {
+    private boolean startDeployment(KubernetesClient client, StartAppDto appDto) {
         Deployment start = client.apps().deployments()
                 .inNamespace(appDto.getNamespace())
                 .withName(appDto.getName())
@@ -222,10 +224,49 @@ public class ApplicationServiceImpl implements ApplicationService {
         return start != null;
     }
 
-    private boolean deleteApp(KubernetesClient client, DeleteAppDto appDto) {
+    private boolean deleteDeployment(KubernetesClient client, DeleteAppDto appDto) {
         return client.apps().deployments()
                 .inNamespace(appDto.getNamespace())
                 .withName(appDto.getName())
                 .delete();
+    }
+
+    @Override
+    public Object updateReplicas(AppReplicasDto appReplicasDto) {
+        KubernetesClient client = K8sClient.init(clusterService);
+        UserInfo userInfo = ThreadLocalUtil.getInstance().getUserInfo();
+        Deployment deployment = client.apps().deployments()
+                .inNamespace(appReplicasDto.getNamespace())
+                .withName(appReplicasDto.getName()).get();
+        if (RoleUtil.isAdmin(userInfo.getRole())) {
+            boolean res = resetReplicas(client, appReplicasDto);
+            if (res) {
+                return appReplicasDto.getName();
+            }
+            throw new ServerException(CustomEnum.RESET_APPLICATION_REPLICAS_ERROR);
+        }
+        String ownerId = deployment.getMetadata().getAnnotations().get(CustomAnno.PAN_USER);
+        if (StringUtils.isEmpty(ownerId) || !ownerId.equals(userInfo.getId())) {
+            throw new ServerException(CustomEnum.NO_PERMISSION);
+        } else {
+            boolean res = resetReplicas(client, appReplicasDto);
+            if (res) {
+                return appReplicasDto.getName();
+            }
+            throw new ServerException(CustomEnum.RESET_APPLICATION_REPLICAS_ERROR);
+        }
+
+    }
+
+    private boolean resetReplicas(KubernetesClient client, AppReplicasDto appReplicasDto) {
+        Deployment start = client.apps().deployments()
+                .inNamespace(appReplicasDto.getNamespace())
+                .withName(appReplicasDto.getName())
+                .edit()
+                .withNewSpec()
+                .withReplicas(appReplicasDto.getReplicas())
+                .endSpec()
+                .done();
+        return start != null;
     }
 }

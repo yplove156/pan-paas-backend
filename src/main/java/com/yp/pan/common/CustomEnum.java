@@ -40,6 +40,7 @@ public enum CustomEnum {
     STOP_APPLICATION_ERROR("STOP_APPLICATION_ERROR", "停止应用失败"),
     START_APPLICATION_ERROR("START_APPLICATION_ERROR", "启动应用失败"),
     DELETE_APPLICATION_ERROR("DELETE_APPLICATION_ERROR", "删除应用失败"),
+    RESET_APPLICATION_REPLICAS_ERROR("RESET_APPLICATION_REPLICAS_ERROR", "设置应用副本失败"),
 
     DELETE_SERVICE_ERROR("DELETE_SERVICE_ERROR", "删除Service失败"),
 
@@ -48,10 +49,12 @@ public enum CustomEnum {
 
     YAML_DEPLOY_ERROR("YAML_DEPLOY_ERROR", "Yaml部署失败"),
 
+    POD_REBOOT_ERROR("POD_REBOOT_ERROR", "实例重启失败"),
+
     /**
      * 出现未知异常
      */
-    COMMON_EXCEPTION("COMMON_EXCEPTION", "服务器忙，请稍后重试"),;
+    COMMON_EXCEPTION("COMMON_EXCEPTION", "未知错误，请稍后重试"),;
 
     private String code;
     private String msg;

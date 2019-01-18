@@ -1,5 +1,6 @@
 package com.yp.pan.service;
 
+import com.yp.pan.dto.AppReplicasDto;
 import com.yp.pan.dto.DeleteAppDto;
 import com.yp.pan.dto.DeployDto;
 import com.yp.pan.dto.StartAppDto;
@@ -14,4 +15,6 @@ public interface ApplicationService {
     String startApp(StartAppDto appDto);
 
     String deleteApp(DeleteAppDto appDto);
+
+    Object updateReplicas(AppReplicasDto appReplicasDto);
 }
