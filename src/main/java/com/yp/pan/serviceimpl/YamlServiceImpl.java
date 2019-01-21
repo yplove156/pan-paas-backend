@@ -20,9 +20,14 @@ public class YamlServiceImpl implements YamlService {
     }
 
     @Override
-    public Object deployYaml(InputStream inputStream) {
+    public Object deployByYaml(InputStream inputStream) {
         KubernetesClient client = K8sClient.init(clusterService);
-        client.load(inputStream).createOrReplace();
-        return null;
+        return client.load(inputStream).createOrReplace();
+    }
+
+    @Override
+    public Object deleteByYaml(InputStream inputStream) {
+        KubernetesClient client = K8sClient.init(clusterService);
+        return client.load(inputStream).delete();
     }
 }

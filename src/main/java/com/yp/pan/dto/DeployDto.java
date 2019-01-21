@@ -11,6 +11,7 @@ public class DeployDto {
 
     private String imageId;
     private String namespace;
+    private String name;
     private Integer replicas;
     private String imagePullPolicy;
 }

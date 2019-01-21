@@ -48,6 +48,7 @@ public enum CustomEnum {
     UPDATE_PWD_ERROR("UPDATE_PWD_ERROR", "修改密码失败"),
 
     YAML_DEPLOY_ERROR("YAML_DEPLOY_ERROR", "Yaml部署失败"),
+    YAML_DELETE_ERROR("YAML_DELETE_ERROR", "Yaml删除失败"),
 
     POD_REBOOT_ERROR("POD_REBOOT_ERROR", "实例重启失败"),
     CONFIG_MAP_DELETE_ERROR("CONFIG_MAP_DELETE_ERROR", "ConfigMap删除失败"),

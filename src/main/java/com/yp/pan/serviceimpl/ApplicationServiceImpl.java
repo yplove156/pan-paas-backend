@@ -19,6 +19,7 @@ import com.yp.pan.util.ServerException;
 import com.yp.pan.util.ThreadLocalUtil;
 import io.fabric8.kubernetes.api.model.Container;
 import io.fabric8.kubernetes.api.model.ContainerPort;
+import io.fabric8.kubernetes.api.model.EnvVar;
 import io.fabric8.kubernetes.api.model.LabelSelector;
 import io.fabric8.kubernetes.api.model.ObjectMeta;
 import io.fabric8.kubernetes.api.model.PodSpec;
@@ -59,7 +60,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         Deployment deployment = new Deployment();
 
         ObjectMeta meta = new ObjectMeta();
-        meta.setName(imageInfo.getName());
+        meta.setName(deployDto.getName());
 
         Map<String, String> labels = new HashMap<>();
         labels.put(CustomAnno.PAN_APP, imageInfo.getName());
@@ -92,13 +93,14 @@ public class ApplicationServiceImpl implements ApplicationService {
         container.setImage(imageInfo.getImage());
         container.setName(imageInfo.getName());
         container.setImagePullPolicy(deployDto.getImagePullPolicy());
-        List<ContainerPort> ports = new ArrayList<>();
-        ContainerPort port = new ContainerPort();
-        port.setContainerPort(80);
-        ports.add(port);
-        container.setPorts(ports);
+//        List<ContainerPort> ports = new ArrayList<>();
+//        ContainerPort port = new ContainerPort();
+//        port.setContainerPort(deployDto.getPort());
+//        ports.add(port);
+//        container.setPorts(ports);
         containers.add(container);
         podSpec.setContainers(containers);
+
         templateSpec.setSpec(podSpec);
         spec.setTemplate(templateSpec);
 

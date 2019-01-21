@@ -29,6 +29,7 @@ public class LogCode {
     public static final String USER_PWD_LOG = "USER_PWD_LOG";
 
     public static final String DEPLOY_YAML_LOG = "DEPLOY_YAML_LOG";
+    public static final String DELETE_YAML_LOG = "DELETE_YAML_LOG";
 
 
     public static final String GET_PUBLIC_IMAGES_LOG = "GET_OPEN_IMAGES";

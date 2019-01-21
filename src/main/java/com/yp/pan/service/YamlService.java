@@ -4,5 +4,7 @@ import java.io.InputStream;
 
 public interface YamlService {
 
-    Object deployYaml(InputStream inputStream);
+    Object deployByYaml(InputStream inputStream);
+
+    Object deleteByYaml(InputStream inputStream);
 }
