@@ -22,10 +22,12 @@ import java.util.Map;
 public class CustomInterceptor implements HandlerInterceptor {
 
     private final static String NULL_STR = "null";
+    private final static String PAN_TOKEN = "pan-tk";
+    private final static String EXPIRE_TIME = "expireTime";
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String token = request.getHeader("pan-tk");
+        String token = request.getHeader(PAN_TOKEN);
         if (StringUtils.isEmpty(token) || NULL_STR.equals(token)) {
             String res = JSONObject.toJSONString(ResponseEntity.getFail(CustomEnum.AUTH_FAILED.getCode(), CustomEnum.AUTH_FAILED.getMsg()));
             response.getWriter().write(res);
@@ -37,13 +39,12 @@ public class CustomInterceptor implements HandlerInterceptor {
             response.getWriter().write(res);
             return false;
         }
-        Long expireTime = Long.parseLong(data.get("expireTime"));
+        Long expireTime = Long.parseLong(data.get(EXPIRE_TIME));
         if (expireTime < System.currentTimeMillis()) {
             String res = JSONObject.toJSONString(ResponseEntity.getFail(CustomEnum.AUTH_FAILED.getCode(), CustomEnum.AUTH_FAILED.getMsg()));
             response.getWriter().write(res);
             return false;
         }
-//        datas.forEach(request::setAttribute);
         UserInfo userInfo = new UserInfo();
         userInfo.setId(data.get("userId"));
         userInfo.setUsername(data.get("username"));

@@ -1,10 +1,12 @@
 package com.yp.pan.service;
 
-import java.util.Map;
+import com.yp.pan.dto.ConfigMapDto;
 
 public interface ConfigMapService {
 
     Object configMapList();
 
-    Object createConfigMap(Map<String, String> data);
+    Object createConfigMap(ConfigMapDto configMapDto);
+
+    String deleteConfigMap(String namespace, String name);
 }

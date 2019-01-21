@@ -50,6 +50,7 @@ public enum CustomEnum {
     YAML_DEPLOY_ERROR("YAML_DEPLOY_ERROR", "Yaml部署失败"),
 
     POD_REBOOT_ERROR("POD_REBOOT_ERROR", "实例重启失败"),
+    CONFIG_MAP_DELETE_ERROR("CONFIG_MAP_DELETE_ERROR", "ConfigMap删除失败"),
 
     /**
      * 出现未知异常

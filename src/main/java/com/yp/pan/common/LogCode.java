@@ -22,6 +22,8 @@ public class LogCode {
     public static final String DELETE_SERVICE_LOG = "DELETE_SERVICE_LOG";
 
     public static final String ADD_CONFIGMAP_LOG = "ADD_CONFIGMAP_LOG";
+    public static final String DELETE_CONFIGMAP_LOG = "DELETE_CONFIGMAP_LOG";
+    public static final String UPDATE_CONFIGMAP_LOG = "UPDATE_CONFIGMAP_LOG";
 
     public static final String ADD_USER_LOG = "ADD_USER_LOG";
     public static final String USER_PWD_LOG = "USER_PWD_LOG";
