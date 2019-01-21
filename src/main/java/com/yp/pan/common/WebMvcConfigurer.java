@@ -4,6 +4,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * WebMvcConfigurer class
  *
@@ -14,7 +17,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupp
 public class WebMvcConfigurer extends WebMvcConfigurationSupport {
     @Override
     protected void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new CustomInterceptor()).addPathPatterns("/**");
+        List<String> exclude = new ArrayList<>();
+        exclude.add("/login");
+        exclude.add("/logout");
+        registry.addInterceptor(new CustomInterceptor())
+                .addPathPatterns("/**")
+                .excludePathPatterns(exclude);
         super.addInterceptors(registry);
     }
 }

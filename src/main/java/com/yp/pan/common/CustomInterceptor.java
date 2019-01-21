@@ -21,16 +21,10 @@ import java.util.Map;
  */
 public class CustomInterceptor implements HandlerInterceptor {
 
-    private final static String LOGIN_URL = "/login";
-    private final static String LOGOUT_URL = "/logout";
     private final static String NULL_STR = "null";
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String url = request.getRequestURI();
-        if (LOGIN_URL.equals(url)) {
-            return true;
-        }
         String token = request.getHeader("pan-tk");
         if (StringUtils.isEmpty(token) || NULL_STR.equals(token)) {
             String res = JSONObject.toJSONString(ResponseEntity.getFail(CustomEnum.AUTH_FAILED.getCode(), CustomEnum.AUTH_FAILED.getMsg()));
