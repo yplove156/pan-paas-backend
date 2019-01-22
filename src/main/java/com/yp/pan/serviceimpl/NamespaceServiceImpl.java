@@ -8,6 +8,7 @@ import com.yp.pan.dto.NamespaceDto;
 import com.yp.pan.model.UserInfo;
 import com.yp.pan.service.ClusterService;
 import com.yp.pan.service.NamespaceService;
+import com.yp.pan.util.RoleUtil;
 import com.yp.pan.util.ServerException;
 import com.yp.pan.util.ThreadLocalUtil;
 import io.fabric8.kubernetes.api.model.DoneableNamespace;
@@ -58,7 +59,7 @@ public class NamespaceServiceImpl implements NamespaceService {
         UserInfo userInfo = ThreadLocalUtil.getInstance().getUserInfo();
         return namespaces.stream()
                 .filter(namespace -> {
-                    if (userInfo.getRole().equals(RoleEnum.ADMIN.getRole())) {
+                    if (RoleUtil.isAdmin(userInfo.getRole())) {
                         return true;
                     }
                     String user = namespace.getMetadata().getAnnotations().get(CustomAnno.PAN_USER);

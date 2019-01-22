@@ -9,10 +9,13 @@ import com.yp.pan.service.ClusterService;
 import com.yp.pan.service.SVCService;
 import com.yp.pan.util.ServerException;
 import com.yp.pan.util.ThreadLocalUtil;
-import io.fabric8.kubernetes.api.model.ConfigMap;
+import io.fabric8.kubernetes.api.model.ObjectMeta;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class SVCServiceImpl implements SVCService {
@@ -35,17 +38,34 @@ public class SVCServiceImpl implements SVCService {
         Boolean delete = false;
         UserInfo userInfo = ThreadLocalUtil.getInstance().getUserInfo();
         if (RoleEnum.ADMIN.getRole().equals(userInfo.getRole())) {
-            delete = client.configMaps().inNamespace(namespace).withName(name).delete();
+            delete = client.services().inNamespace(namespace).withName(name).delete();
         } else {
-            ConfigMap configMap = client.configMaps().inNamespace(namespace).withName(name).get();
-            String owner = configMap.getMetadata().getAnnotations().get(CustomAnno.PAN_USER);
+            io.fabric8.kubernetes.api.model.Service service = client.services().inNamespace(namespace).withName(name).get();
+            String owner = service.getMetadata().getAnnotations().get(CustomAnno.PAN_USER);
             if (null != owner && owner.equals(userInfo.getId())) {
-                delete = client.configMaps().inNamespace(namespace).withName(name).delete();
+                delete = client.services().inNamespace(namespace).withName(name).delete();
             }
         }
         if (delete) {
             return name;
         }
         throw new ServerException(CustomEnum.DELETE_SERVICE_ERROR);
+    }
+
+    @Override
+    public Object addService() {
+        KubernetesClient client = K8sClient.init(clusterService);
+        io.fabric8.kubernetes.api.model.Service service = new io.fabric8.kubernetes.api.model.Service();
+        ObjectMeta meta = new ObjectMeta();
+        Map<String, String> anno = new HashMap<>();
+        UserInfo userInfo = ThreadLocalUtil.getInstance().getUserInfo();
+        anno.put(CustomAnno.PAN_USER, userInfo.getId());
+        anno.put(CustomAnno.PAN_DESC, userInfo.getId());
+        meta.setAnnotations(anno);
+        service.setMetadata(meta);
+        io.fabric8.kubernetes.api.model.Service replace = client.services().inNamespace("")
+                .withName("")
+                .createOrReplace();
+        return null;
     }
 }

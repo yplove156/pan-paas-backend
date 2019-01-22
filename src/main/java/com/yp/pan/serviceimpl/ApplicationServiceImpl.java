@@ -85,6 +85,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         PodTemplateSpec templateSpec = new PodTemplateSpec();
         ObjectMeta templateMeta = new ObjectMeta();
         templateMeta.setLabels(labels);
+        templateMeta.setAnnotations(annotations);
         templateSpec.setMetadata(templateMeta);
 
         PodSpec podSpec = new PodSpec();
@@ -125,23 +126,18 @@ public class ApplicationServiceImpl implements ApplicationService {
             throw new ServerException(CustomEnum.STOP_APPLICATION_ERROR);
         }
         UserInfo userInfo = ThreadLocalUtil.getInstance().getUserInfo();
-        if (userInfo.getRole().equals(RoleEnum.ADMIN.getRole())) {
-            boolean res = stopDeployment(client, appDto);
-            if (res) {
-                return appDto.getName();
-            }
-            throw new ServerException(CustomEnum.STOP_APPLICATION_ERROR);
-        }
-        String ownerId = deployment.getMetadata().getAnnotations().get(CustomAnno.PAN_USER);
-        if (StringUtils.isEmpty(ownerId) || !ownerId.equals(userInfo.getId())) {
-            throw new ServerException(CustomEnum.NO_PERMISSION);
+        boolean res;
+        if (RoleUtil.isAdmin(userInfo.getRole())) {
+            res = stopDeployment(client, appDto);
+        } else if (RoleUtil.isOwner(deployment.getMetadata(), userInfo.getId())) {
+            res = stopDeployment(client, appDto);
         } else {
-            boolean res = stopDeployment(client, appDto);
-            if (res) {
-                return appDto.getName();
-            }
-            throw new ServerException(CustomEnum.STOP_APPLICATION_ERROR);
+            throw new ServerException(CustomEnum.NO_PERMISSION);
         }
+        if (res) {
+            return appDto.getName();
+        }
+        throw new ServerException(CustomEnum.STOP_APPLICATION_ERROR);
     }
 
     @Override
@@ -154,23 +150,18 @@ public class ApplicationServiceImpl implements ApplicationService {
             throw new ServerException(CustomEnum.START_APPLICATION_ERROR);
         }
         UserInfo userInfo = ThreadLocalUtil.getInstance().getUserInfo();
-        if (userInfo.getRole().equals(RoleEnum.ADMIN.getRole())) {
-            boolean res = startDeployment(client, appDto);
-            if (res) {
-                return appDto.getName();
-            }
-            throw new ServerException(CustomEnum.START_APPLICATION_ERROR);
-        }
-        String ownerId = deployment.getMetadata().getAnnotations().get(CustomAnno.PAN_USER);
-        if (StringUtils.isEmpty(ownerId) || !ownerId.equals(userInfo.getId())) {
-            throw new ServerException(CustomEnum.NO_PERMISSION);
+        boolean res;
+        if (RoleUtil.isAdmin(userInfo.getRole())) {
+            res = startDeployment(client, appDto);
+        } else if (RoleUtil.isOwner(deployment.getMetadata(), userInfo.getId())) {
+            res = startDeployment(client, appDto);
         } else {
-            boolean res = startDeployment(client, appDto);
-            if (res) {
-                return appDto.getName();
-            }
-            throw new ServerException(CustomEnum.START_APPLICATION_ERROR);
+            throw new ServerException(CustomEnum.NO_PERMISSION);
         }
+        if (res) {
+            return appDto.getName();
+        }
+        throw new ServerException(CustomEnum.START_APPLICATION_ERROR);
     }
 
     @Override
@@ -183,23 +174,18 @@ public class ApplicationServiceImpl implements ApplicationService {
             throw new ServerException(CustomEnum.START_APPLICATION_ERROR);
         }
         UserInfo userInfo = ThreadLocalUtil.getInstance().getUserInfo();
-        if (userInfo.getRole().equals(RoleEnum.ADMIN.getRole())) {
-            boolean res = deleteDeployment(client, appDto);
-            if (res) {
-                return appDto.getName();
-            }
-            throw new ServerException(CustomEnum.START_APPLICATION_ERROR);
-        }
-        String ownerId = deployment.getMetadata().getAnnotations().get(CustomAnno.PAN_USER);
-        if (StringUtils.isEmpty(ownerId) || !ownerId.equals(userInfo.getId())) {
-            throw new ServerException(CustomEnum.NO_PERMISSION);
+        boolean res;
+        if (RoleUtil.isAdmin(userInfo.getRole())) {
+            res = deleteDeployment(client, appDto);
+        } else if (RoleUtil.isOwner(deployment.getMetadata(), userInfo.getId())) {
+            res = deleteDeployment(client, appDto);
         } else {
-            boolean res = deleteDeployment(client, appDto);
-            if (res) {
-                return appDto.getName();
-            }
-            throw new ServerException(CustomEnum.START_APPLICATION_ERROR);
+            throw new ServerException(CustomEnum.NO_PERMISSION);
         }
+        if (res) {
+            return appDto.getName();
+        }
+        throw new ServerException(CustomEnum.START_APPLICATION_ERROR);
     }
 
     private boolean stopDeployment(KubernetesClient client, StopAppDto appDto) {
@@ -247,8 +233,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             }
             throw new ServerException(CustomEnum.RESET_APPLICATION_REPLICAS_ERROR);
         }
-        String ownerId = deployment.getMetadata().getAnnotations().get(CustomAnno.PAN_USER);
-        if (StringUtils.isEmpty(ownerId) || !ownerId.equals(userInfo.getId())) {
+        if (RoleUtil.isOwner(deployment.getMetadata(), userInfo.getId())) {
             throw new ServerException(CustomEnum.NO_PERMISSION);
         } else {
             boolean res = resetReplicas(client, appReplicasDto);

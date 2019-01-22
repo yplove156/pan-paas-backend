@@ -20,6 +20,7 @@ public class LogCode {
     public static final String DELETE_NAMESPACE_LOG = "DELETE_NAMESPACE_LOG";
 
     public static final String DELETE_SERVICE_LOG = "DELETE_SERVICE_LOG";
+    public static final String ADD_SERVICE_LOG = "ADD_SERVICE_LOG";
 
     public static final String ADD_CONFIGMAP_LOG = "ADD_CONFIGMAP_LOG";
     public static final String DELETE_CONFIGMAP_LOG = "DELETE_CONFIGMAP_LOG";

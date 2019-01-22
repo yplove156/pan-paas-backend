@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,6 +42,12 @@ public class ServiceController {
             @PathVariable String namespace,
             @PathVariable String name) {
         return svcService.deleteService(namespace, name);
+    }
+
+    @PostMapping
+    @PanLog(LogCode.ADD_SERVICE_LOG)
+    public Object addService() {
+        return null;
     }
 
 }
