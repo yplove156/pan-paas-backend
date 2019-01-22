@@ -12,12 +12,14 @@ import org.apache.ibatis.jdbc.SQL;
  */
 public class ClusterProvider {
 
-    public String getCluster() {
+    public String getCluster(String userId) {
         return new SQL() {
             {
-                SELECT("id", "url", "ca_cert_data", "client_cert_data", "client_key_data", "open", "create_time", "update_time", "delete_flag");
+                SELECT("id", "url", "user_id", "ca_cert_data", "client_cert_data", "client_key_data", "open", "create_time", "update_time", "delete_flag");
                 FROM("cluster_info");
-                WHERE("open=1", "delete_flag=0");
+                WHERE("user_id=#{userId}");
+                WHERE("open=1");
+                WHERE("delete_flag=0");
             }
         }.toString() + "limit 1";
     }
@@ -28,6 +30,7 @@ public class ClusterProvider {
                 INSERT_INTO("cluster_info");
                 VALUES("id", "#{id}");
                 VALUES("url", "#{url}");
+                VALUES("user_id", "#{userId}");
                 VALUES("ca_cert_data", "#{caCertData}");
                 VALUES("client_cert_data", "#{clientCertData}");
                 VALUES("client_key_data", "#{clientKeyData}");

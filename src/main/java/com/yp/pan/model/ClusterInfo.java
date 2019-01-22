@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 public class ClusterInfo {
     private String id;
     private String url;
+    private String userId;
     private String caCertData;
     private String clientCertData;
     private String clientKeyData;

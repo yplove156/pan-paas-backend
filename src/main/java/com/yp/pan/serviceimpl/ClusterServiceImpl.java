@@ -4,8 +4,10 @@ import com.yp.pan.common.CustomEnum;
 import com.yp.pan.dto.ClusterInfoDto;
 import com.yp.pan.mapper.ClusterMapper;
 import com.yp.pan.model.ClusterInfo;
+import com.yp.pan.model.UserInfo;
 import com.yp.pan.service.ClusterService;
 import com.yp.pan.util.ServerException;
+import com.yp.pan.util.ThreadLocalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +33,8 @@ public class ClusterServiceImpl implements ClusterService {
 
     @Override
     public ClusterInfo getCluster() {
-        return clusterMapper.getCluster();
+        UserInfo userInfo = ThreadLocalUtil.getInstance().getUserInfo();
+        return clusterMapper.getCluster(userInfo.getId());
     }
 
     @Override
