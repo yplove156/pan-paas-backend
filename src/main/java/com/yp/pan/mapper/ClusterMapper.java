@@ -46,7 +46,7 @@ public interface ClusterMapper {
             @Result(column = "update_time", property = "updateTime"),
             @Result(column = "delete_flag", property = "deleteFlag")
     })
-    List<ClusterInfo> clusterList();
+    List<ClusterInfo> clusterList(String userId);
 
     @UpdateProvider(type = ClusterProvider.class, method = "updateCluster")
     int updateCluster(ClusterInfoDto clusterInfoDto);

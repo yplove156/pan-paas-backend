@@ -61,11 +61,12 @@ public class ClusterProvider {
         }.toString();
     }
 
-    public String clusterList() {
+    public String clusterList(String userId) {
         return new SQL() {
             {
                 SELECT("id", "url", "ca_cert_data", "client_cert_data", "client_key_data", "open", "create_time", "update_time", "delete_flag");
                 FROM("cluster_info");
+                WHERE("user_id=#{userId}");
                 WHERE("delete_flag=0");
             }
         }.toString();

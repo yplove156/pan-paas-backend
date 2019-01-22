@@ -71,7 +71,8 @@ public class ClusterServiceImpl implements ClusterService {
     @Override
     public List<ClusterInfoDto> clusterList() {
         List<ClusterInfoDto> clusterInfoDtos = new ArrayList<>();
-        List<ClusterInfo> clusterInfos = clusterMapper.clusterList();
+        UserInfo userInfo = ThreadLocalUtil.getInstance().getUserInfo();
+        List<ClusterInfo> clusterInfos = clusterMapper.clusterList(userInfo.getId());
         clusterInfos.forEach(clusterInfo -> {
             ClusterInfoDto clusterInfoDto = new ClusterInfoDto();
             clusterInfoDto.setId(clusterInfo.getId());
