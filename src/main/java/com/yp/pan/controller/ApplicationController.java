@@ -12,6 +12,7 @@ import com.yp.pan.service.ApplicationService;
 import com.yp.pan.util.ServerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -29,6 +30,14 @@ public class ApplicationController {
     @Autowired
     public ApplicationController(ApplicationService applicationService) {
         this.applicationService = applicationService;
+    }
+
+    @GetMapping("/namespaces/{namespace}")
+    public Object apps(@PathVariable String namespace) {
+        if (StringUtils.isEmpty(namespace)) {
+            throw new ServerException(CustomEnum.GET_APPLICATIONS_ERROR);
+        }
+        return applicationService.apps(namespace);
     }
 
     /**

@@ -31,11 +31,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@SuppressWarnings("Duplicates")
 @Service
 public class ApplicationServiceImpl implements ApplicationService {
 
@@ -48,6 +51,30 @@ public class ApplicationServiceImpl implements ApplicationService {
     public ApplicationServiceImpl(ClusterService clusterService, ImageService imageService) {
         this.clusterService = clusterService;
         this.imageService = imageService;
+    }
+
+    @Override
+    public Object apps(String namespace) {
+        SimpleDateFormat sdf = new SimpleDateFormat(CustomAnno.K8S_TIME_FORMAT);
+        KubernetesClient client = K8sClient.init(clusterService);
+        List<Deployment> items = client.apps().deployments().inNamespace(namespace).list().getItems();
+        UserInfo userInfo = ThreadLocalUtil.getInstance().getUserInfo();
+        return items.stream()
+                .filter(deployment -> {
+                    if (RoleUtil.isAdmin(userInfo.getRole())) {
+                        return true;
+                    }
+                    return RoleUtil.isOwner(deployment.getMetadata(), userInfo.getId());
+                })
+                .sorted((x, y) -> {
+                    try {
+                        Long dateX = sdf.parse(x.getMetadata().getCreationTimestamp()).getTime();
+                        Long dateY = sdf.parse(y.getMetadata().getCreationTimestamp()).getTime();
+                        return dateX.compareTo(dateY);
+                    } catch (ParseException e) {
+                        return 1;
+                    }
+                });
     }
 
     @Override
@@ -226,22 +253,19 @@ public class ApplicationServiceImpl implements ApplicationService {
         Deployment deployment = client.apps().deployments()
                 .inNamespace(appReplicasDto.getNamespace())
                 .withName(appReplicasDto.getName()).get();
+        boolean res;
         if (RoleUtil.isAdmin(userInfo.getRole())) {
-            boolean res = resetReplicas(client, appReplicasDto);
-            if (res) {
-                return appReplicasDto.getName();
-            }
-            throw new ServerException(CustomEnum.RESET_APPLICATION_REPLICAS_ERROR);
-        }
-        if (RoleUtil.isOwner(deployment.getMetadata(), userInfo.getId())) {
-            throw new ServerException(CustomEnum.NO_PERMISSION);
+            res = resetReplicas(client, appReplicasDto);
+        } else if (RoleUtil.isOwner(deployment.getMetadata(), userInfo.getId())) {
+            res = resetReplicas(client, appReplicasDto);
+
         } else {
-            boolean res = resetReplicas(client, appReplicasDto);
-            if (res) {
-                return appReplicasDto.getName();
-            }
-            throw new ServerException(CustomEnum.RESET_APPLICATION_REPLICAS_ERROR);
+            throw new ServerException(CustomEnum.NO_PERMISSION);
         }
+        if (res) {
+            return appReplicasDto.getName();
+        }
+        throw new ServerException(CustomEnum.RESET_APPLICATION_REPLICAS_ERROR);
 
     }
 

@@ -28,8 +28,6 @@ import java.util.Map;
 @Service
 public class NamespaceServiceImpl implements NamespaceService {
 
-    private final static String FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
-
     private final ClusterService clusterService;
 
     @Autowired
@@ -39,7 +37,7 @@ public class NamespaceServiceImpl implements NamespaceService {
 
     @Override
     public Object namespaces() {
-        SimpleDateFormat sdf = new SimpleDateFormat(FORMAT);
+        SimpleDateFormat sdf = new SimpleDateFormat(CustomAnno.K8S_TIME_FORMAT);
         List<Namespace> namespaces = K8sClient.init(clusterService).namespaces().list().getItems();
         return namespaces.stream().sorted((x, y) -> {
             try {
@@ -54,7 +52,7 @@ public class NamespaceServiceImpl implements NamespaceService {
 
     @Override
     public Object userNamespace() {
-        SimpleDateFormat sdf = new SimpleDateFormat(FORMAT);
+        SimpleDateFormat sdf = new SimpleDateFormat(CustomAnno.K8S_TIME_FORMAT);
         List<Namespace> namespaces = K8sClient.init(clusterService).namespaces().list().getItems();
         UserInfo userInfo = ThreadLocalUtil.getInstance().getUserInfo();
         return namespaces.stream()
@@ -62,8 +60,7 @@ public class NamespaceServiceImpl implements NamespaceService {
                     if (RoleUtil.isAdmin(userInfo.getRole())) {
                         return true;
                     }
-                    String user = namespace.getMetadata().getAnnotations().get(CustomAnno.PAN_USER);
-                    return null != user && user.equals(userInfo.getId());
+                    return RoleUtil.isOwner(namespace.getMetadata(), userInfo.getId());
                 })
                 .sorted((x, y) -> {
                     try {

@@ -16,9 +16,13 @@ import io.fabric8.kubernetes.client.KubernetesClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+@SuppressWarnings("Duplicates")
 @Service
 public class ConfigMapServiceImpl implements ConfigMapService {
     private final ClusterService clusterService;
@@ -30,8 +34,26 @@ public class ConfigMapServiceImpl implements ConfigMapService {
 
     @Override
     public Object configMapList() {
+        SimpleDateFormat sdf = new SimpleDateFormat(CustomAnno.K8S_TIME_FORMAT);
         KubernetesClient client = K8sClient.init(clusterService);
-        return client.configMaps().list();
+        List<ConfigMap> configMaps = client.configMaps().list().getItems();
+        UserInfo userInfo = ThreadLocalUtil.getInstance().getUserInfo();
+        return configMaps.stream()
+                .filter(namespace -> {
+                    if (RoleUtil.isAdmin(userInfo.getRole())) {
+                        return true;
+                    }
+                    return RoleUtil.isOwner(namespace.getMetadata(), userInfo.getId());
+                })
+                .sorted((x, y) -> {
+                    try {
+                        Long dateX = sdf.parse(x.getMetadata().getCreationTimestamp()).getTime();
+                        Long dateY = sdf.parse(y.getMetadata().getCreationTimestamp()).getTime();
+                        return dateX.compareTo(dateY);
+                    } catch (ParseException e) {
+                        return 1;
+                    }
+                });
     }
 
     @Override
@@ -57,16 +79,17 @@ public class ConfigMapServiceImpl implements ConfigMapService {
     public String deleteConfigMap(String namespace, String name) {
         KubernetesClient client = K8sClient.init(clusterService);
         UserInfo userInfo = ThreadLocalUtil.getInstance().getUserInfo();
-        boolean res = false;
-        if (RoleUtil.isAdmin(userInfo.getRole())) {
-            res = delete(client, namespace, name);
-        }
         ConfigMap configMap = client.configMaps()
                 .inNamespace(namespace)
                 .withName(name)
                 .get();
-        if (RoleUtil.isOwner(configMap.getMetadata(), userInfo.getId())) {
+        boolean res;
+        if (RoleUtil.isAdmin(userInfo.getRole())) {
             res = delete(client, namespace, name);
+        } else if (RoleUtil.isOwner(configMap.getMetadata(), userInfo.getId())) {
+            res = delete(client, namespace, name);
+        } else {
+            throw new ServerException(CustomEnum.NO_PERMISSION);
         }
         if (res) {
             return name;

@@ -8,6 +8,8 @@ import com.yp.pan.dto.StopAppDto;
 
 public interface ApplicationService {
 
+    Object apps(String namespace);
+
     String deploy(DeployDto deployDto);
 
     String stopApp(StopAppDto appDto);
