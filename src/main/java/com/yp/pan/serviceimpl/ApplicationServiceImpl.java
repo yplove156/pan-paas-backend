@@ -7,6 +7,7 @@ import com.yp.pan.config.K8sClient;
 import com.yp.pan.dto.AppReplicasDto;
 import com.yp.pan.dto.DeleteAppDto;
 import com.yp.pan.dto.DeployDto;
+import com.yp.pan.dto.HpaDto;
 import com.yp.pan.dto.StartAppDto;
 import com.yp.pan.dto.StopAppDto;
 import com.yp.pan.model.ImageInfo;
@@ -19,11 +20,16 @@ import com.yp.pan.util.ServerException;
 import com.yp.pan.util.ThreadLocalUtil;
 import io.fabric8.kubernetes.api.model.Container;
 import io.fabric8.kubernetes.api.model.ContainerPort;
+import io.fabric8.kubernetes.api.model.CrossVersionObjectReference;
 import io.fabric8.kubernetes.api.model.EnvVar;
+import io.fabric8.kubernetes.api.model.HorizontalPodAutoscaler;
+import io.fabric8.kubernetes.api.model.HorizontalPodAutoscalerSpec;
 import io.fabric8.kubernetes.api.model.LabelSelector;
+import io.fabric8.kubernetes.api.model.MetricSpec;
 import io.fabric8.kubernetes.api.model.ObjectMeta;
 import io.fabric8.kubernetes.api.model.PodSpec;
 import io.fabric8.kubernetes.api.model.PodTemplateSpec;
+import io.fabric8.kubernetes.api.model.ResourceMetricSource;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.api.model.apps.DeploymentSpec;
 import io.fabric8.kubernetes.client.KubernetesClient;
@@ -244,6 +250,77 @@ public class ApplicationServiceImpl implements ApplicationService {
                 .inNamespace(appDto.getNamespace())
                 .withName(appDto.getName())
                 .delete();
+    }
+
+    private boolean autoScaleDeployment(KubernetesClient client, HpaDto hpaDto, Deployment deployment) {
+        HorizontalPodAutoscaler autoScaler = new HorizontalPodAutoscaler();
+
+        ObjectMeta meta = new ObjectMeta();
+        Map<String, String> annotations = new HashMap<>();
+        UserInfo userInfo = ThreadLocalUtil.getInstance().getUserInfo();
+        annotations.put(CustomAnno.PAN_USER, userInfo.getId());
+        annotations.put(CustomAnno.PAN_DESC, userInfo.getId());
+        meta.setAnnotations(annotations);
+        autoScaler.setMetadata(meta);
+
+        HorizontalPodAutoscalerSpec spec = new HorizontalPodAutoscalerSpec();
+        spec.setMaxReplicas(hpaDto.getMaxReplicas());
+        spec.setMinReplicas(hpaDto.getMinReplicas());
+
+        CrossVersionObjectReference reference = new CrossVersionObjectReference();
+        reference.setApiVersion(deployment.getApiVersion());
+        reference.setKind(deployment.getKind());
+        reference.setName(deployment.getMetadata().getName());
+        spec.setScaleTargetRef(reference);
+
+        List<MetricSpec> metricSpecs = new ArrayList<>();
+
+        MetricSpec cpuSpec = new MetricSpec();
+        cpuSpec.setType("Resource");
+        ResourceMetricSource cpuResource = new ResourceMetricSource();
+        cpuResource.setName("cpu");
+        cpuResource.setTargetAverageUtilization(hpaDto.getCpuPercent());
+        cpuSpec.setResource(cpuResource);
+        metricSpecs.add(cpuSpec);
+
+        MetricSpec memorySpec = new MetricSpec();
+        cpuSpec.setType("Resource");
+        ResourceMetricSource memoryResource = new ResourceMetricSource();
+        memoryResource.setName("memory");
+        memoryResource.setTargetAverageUtilization(hpaDto.getMemoryPercent());
+        memorySpec.setResource(memoryResource);
+        metricSpecs.add(memorySpec);
+
+        spec.setMetrics(metricSpecs);
+
+        autoScaler.setSpec(spec);
+        HorizontalPodAutoscaler replace = client.autoscaling().horizontalPodAutoscalers()
+                .inNamespace(hpaDto.getNamespace())
+                .withName(hpaDto.getName())
+                .createOrReplace(autoScaler);
+        return replace != null;
+    }
+
+    @Override
+    public Object autoScale(HpaDto hpaDto) {
+        KubernetesClient client = K8sClient.init(clusterService);
+        UserInfo userInfo = ThreadLocalUtil.getInstance().getUserInfo();
+        Deployment deployment = client.apps().deployments()
+                .inNamespace(hpaDto.getNamespace())
+                .withName(hpaDto.getName()).get();
+        boolean res;
+        if (RoleUtil.isAdmin(userInfo.getRole())) {
+            res = autoScaleDeployment(client, hpaDto, deployment);
+        } else if (RoleUtil.isOwner(deployment.getMetadata(), userInfo.getId())) {
+            res = autoScaleDeployment(client, hpaDto, deployment);
+
+        } else {
+            throw new ServerException(CustomEnum.NO_PERMISSION);
+        }
+        if (res) {
+            return hpaDto.getName();
+        }
+        throw new ServerException(CustomEnum.RESET_APPLICATION_REPLICAS_ERROR);
     }
 
     @Override

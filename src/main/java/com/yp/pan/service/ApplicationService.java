@@ -3,6 +3,7 @@ package com.yp.pan.service;
 import com.yp.pan.dto.AppReplicasDto;
 import com.yp.pan.dto.DeleteAppDto;
 import com.yp.pan.dto.DeployDto;
+import com.yp.pan.dto.HpaDto;
 import com.yp.pan.dto.StartAppDto;
 import com.yp.pan.dto.StopAppDto;
 
@@ -19,4 +20,6 @@ public interface ApplicationService {
     String deleteApp(DeleteAppDto appDto);
 
     Object updateReplicas(AppReplicasDto appReplicasDto);
+
+    Object autoScale(HpaDto hpaDto);
 }

@@ -11,6 +11,7 @@ public class LogCode {
     public static final String START_APP_LOG = "START_APP_LOG";
     public static final String DELETE_APP_LOG = "DELETE_APP_LOG";
     public static final String UPDATE_APP_REPLICAS_LOG = "UPDATE_APP_REPLICAS_LOG";
+    public static final String HPA_APP_LOG = "HPA_APP_LOG";
 
     public static final String ADD_CLUSTER_LOG = "ADD_CLUSTER_LOG";
     public static final String UPDATE_CLUSTER_LOG = "UPDATE_CLUSTER_LOG";

@@ -6,6 +6,7 @@ import com.yp.pan.common.LogCode;
 import com.yp.pan.dto.AppReplicasDto;
 import com.yp.pan.dto.DeleteAppDto;
 import com.yp.pan.dto.DeployDto;
+import com.yp.pan.dto.HpaDto;
 import com.yp.pan.dto.StartAppDto;
 import com.yp.pan.dto.StopAppDto;
 import com.yp.pan.service.ApplicationService;
@@ -113,5 +114,11 @@ public class ApplicationController {
             throw new ServerException(CustomEnum.RESET_APPLICATION_REPLICAS_ERROR);
         }
         return applicationService.updateReplicas(appReplicasDto);
+    }
+
+    @PutMapping("/hpa")
+    @PanLog(LogCode.HPA_APP_LOG)
+    public Object autoScale(@RequestBody HpaDto hpaDto) {
+        return applicationService.autoScale(hpaDto);
     }
 }
