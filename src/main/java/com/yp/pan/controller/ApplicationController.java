@@ -116,6 +116,12 @@ public class ApplicationController {
         return applicationService.updateReplicas(appReplicasDto);
     }
 
+    /**
+     * 设置应用自动伸缩
+     *
+     * @param hpaDto
+     * @return
+     */
     @PutMapping("/hpa")
     @PanLog(LogCode.HPA_APP_LOG)
     public Object autoScale(@RequestBody HpaDto hpaDto) {

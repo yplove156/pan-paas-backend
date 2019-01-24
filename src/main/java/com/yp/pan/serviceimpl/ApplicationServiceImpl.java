@@ -261,6 +261,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         annotations.put(CustomAnno.PAN_USER, userInfo.getId());
         annotations.put(CustomAnno.PAN_DESC, userInfo.getId());
         meta.setAnnotations(annotations);
+        meta.setName(hpaDto.getName());
         autoScaler.setMetadata(meta);
 
         HorizontalPodAutoscalerSpec spec = new HorizontalPodAutoscalerSpec();

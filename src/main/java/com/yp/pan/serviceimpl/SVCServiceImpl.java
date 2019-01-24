@@ -4,17 +4,22 @@ import com.yp.pan.common.CustomAnno;
 import com.yp.pan.common.CustomEnum;
 import com.yp.pan.common.RoleEnum;
 import com.yp.pan.config.K8sClient;
+import com.yp.pan.dto.ServiceDto;
 import com.yp.pan.model.UserInfo;
 import com.yp.pan.service.ClusterService;
 import com.yp.pan.service.SVCService;
 import com.yp.pan.util.ServerException;
 import com.yp.pan.util.ThreadLocalUtil;
 import io.fabric8.kubernetes.api.model.ObjectMeta;
+import io.fabric8.kubernetes.api.model.ServicePort;
+import io.fabric8.kubernetes.api.model.ServiceSpec;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -53,7 +58,7 @@ public class SVCServiceImpl implements SVCService {
     }
 
     @Override
-    public Object addService() {
+    public Object addService(ServiceDto serviceDto) {
         KubernetesClient client = K8sClient.init(clusterService);
         io.fabric8.kubernetes.api.model.Service service = new io.fabric8.kubernetes.api.model.Service();
         ObjectMeta meta = new ObjectMeta();
@@ -62,10 +67,23 @@ public class SVCServiceImpl implements SVCService {
         anno.put(CustomAnno.PAN_USER, userInfo.getId());
         anno.put(CustomAnno.PAN_DESC, userInfo.getId());
         meta.setAnnotations(anno);
+        meta.setName(serviceDto.getName());
         service.setMetadata(meta);
-        io.fabric8.kubernetes.api.model.Service replace = client.services().inNamespace("")
-                .withName("")
-                .createOrReplace();
-        return null;
+
+        ServiceSpec spec = new ServiceSpec();
+        spec.setType(serviceDto.getType());
+        spec.setSelector(serviceDto.getSelector());
+        spec.setPorts(serviceDto.getPorts());
+        
+        service.setSpec(spec);
+
+        io.fabric8.kubernetes.api.model.Service replace = client.services()
+                .inNamespace(serviceDto.getNamespace())
+                .withName(serviceDto.getName())
+                .createOrReplace(service);
+        if (replace != null) {
+            return replace;
+        }
+        throw new ServerException(CustomEnum.CREATE_SERVICE_ERROR);
     }
 }

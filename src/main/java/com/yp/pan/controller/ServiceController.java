@@ -6,6 +6,7 @@ import com.yp.pan.common.CustomEnum;
 import com.yp.pan.common.LogCode;
 import com.yp.pan.common.RoleEnum;
 import com.yp.pan.config.K8sClient;
+import com.yp.pan.dto.ServiceDto;
 import com.yp.pan.service.ClusterService;
 import com.yp.pan.service.SVCService;
 import com.yp.pan.util.ServerException;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -46,8 +48,8 @@ public class ServiceController {
 
     @PostMapping
     @PanLog(LogCode.ADD_SERVICE_LOG)
-    public Object addService() {
-        return null;
+    public Object addService(@RequestBody ServiceDto serviceDto) {
+        return svcService.addService(serviceDto);
     }
 
 }
