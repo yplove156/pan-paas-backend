@@ -34,7 +34,7 @@ public class NoticeController {
     }
 
     @DeleteMapping("/{id}")
-    public Object delete(@PathVariable String id) {
+    public Object deleteNotice(@PathVariable String id) {
         return null;
     }
 }
