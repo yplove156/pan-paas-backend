@@ -105,6 +105,13 @@
             <artifactId>spring-boot-starter-websocket</artifactId>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/me.snowdrop/istio-client -->
+        <dependency>
+            <groupId>me.snowdrop</groupId>
+            <artifactId>istio-client</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+
 
     </dependencies>
 

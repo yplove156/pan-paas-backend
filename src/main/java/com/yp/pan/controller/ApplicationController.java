@@ -33,6 +33,12 @@ public class ApplicationController {
         this.applicationService = applicationService;
     }
 
+    /**
+     * 获取namespace下应用列表
+     *
+     * @param namespace
+     * @return
+     */
     @GetMapping("/namespaces/{namespace}")
     public Object apps(@PathVariable String namespace) {
         if (StringUtils.isEmpty(namespace)) {
