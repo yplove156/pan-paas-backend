@@ -55,6 +55,8 @@ public enum CustomEnum {
     POD_REBOOT_ERROR("POD_REBOOT_ERROR", "实例重启失败"),
     CONFIG_MAP_DELETE_ERROR("CONFIG_MAP_DELETE_ERROR", "ConfigMap删除失败"),
 
+    SECRET_DELETE_ERROR("SECRET_DELETE_ERROR", "Secret删除失败"),
+
     /**
      * 出现未知异常
      */

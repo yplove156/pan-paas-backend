@@ -27,11 +27,11 @@ public class LogProvider {
     public String logList(Map<String, Object> params) {
         return new SQL() {
             {
-                SELECT("id", "action", "user", "status", "create_time");
+                SELECT("id", "action", "user", "status", "res", "message", "create_time");
                 FROM("log_info");
                 ORDER_BY("create_time desc");
             }
-        }.toString() + "limit #{start},#{limit}";
+        }.toString() + " limit #{start},#{limit}";
     }
 
     public String countLog() {

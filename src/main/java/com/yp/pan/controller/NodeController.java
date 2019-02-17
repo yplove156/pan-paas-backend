@@ -10,13 +10,7 @@ import io.fabric8.kubernetes.api.model.Node;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * NodeController class
@@ -56,6 +50,18 @@ public class NodeController {
                 .edit()
                 .editMetadata()
                 .addToLabels(nodeLabelDto.getLabels())
+                .endMetadata()
+                .done();
+    }
+
+    @DeleteMapping("/{name}/labels/{label}")
+    public Object deleteLabels(@PathVariable String name, @PathVariable String label) {
+        return K8sClient.init(clusterService)
+                .nodes()
+                .withName(name)
+                .edit()
+                .editMetadata()
+                .removeFromLabels(label)
                 .endMetadata()
                 .done();
     }

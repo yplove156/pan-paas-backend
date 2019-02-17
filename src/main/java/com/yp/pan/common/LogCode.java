@@ -35,4 +35,6 @@ public class LogCode {
 
 
     public static final String GET_PUBLIC_IMAGES_LOG = "GET_OPEN_IMAGES";
+
+    public static final String DELETE_SECRET_LOG = "DELETE_SECRET_LOG";
 }
