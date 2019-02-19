@@ -7,7 +7,7 @@ import com.yp.pan.dto.HpaDto;
 import com.yp.pan.dto.StartAppDto;
 import com.yp.pan.dto.StopAppDto;
 
-public interface ApplicationService {
+public interface DeploymentService {
 
     Object apps(String namespace);
 

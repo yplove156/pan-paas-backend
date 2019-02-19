@@ -2,7 +2,6 @@ package com.yp.pan.serviceimpl;
 
 import com.yp.pan.common.CustomAnno;
 import com.yp.pan.common.CustomEnum;
-import com.yp.pan.common.RoleEnum;
 import com.yp.pan.config.K8sClient;
 import com.yp.pan.dto.AppReplicasDto;
 import com.yp.pan.dto.DeleteAppDto;
@@ -12,16 +11,14 @@ import com.yp.pan.dto.StartAppDto;
 import com.yp.pan.dto.StopAppDto;
 import com.yp.pan.model.ImageInfo;
 import com.yp.pan.model.UserInfo;
-import com.yp.pan.service.ApplicationService;
+import com.yp.pan.service.DeploymentService;
 import com.yp.pan.service.ClusterService;
 import com.yp.pan.service.ImageService;
 import com.yp.pan.util.RoleUtil;
 import com.yp.pan.util.ServerException;
 import com.yp.pan.util.ThreadLocalUtil;
 import io.fabric8.kubernetes.api.model.Container;
-import io.fabric8.kubernetes.api.model.ContainerPort;
 import io.fabric8.kubernetes.api.model.CrossVersionObjectReference;
-import io.fabric8.kubernetes.api.model.EnvVar;
 import io.fabric8.kubernetes.api.model.HorizontalPodAutoscaler;
 import io.fabric8.kubernetes.api.model.HorizontalPodAutoscalerSpec;
 import io.fabric8.kubernetes.api.model.LabelSelector;
@@ -35,7 +32,6 @@ import io.fabric8.kubernetes.api.model.apps.DeploymentSpec;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -46,7 +42,7 @@ import java.util.Map;
 
 @SuppressWarnings("Duplicates")
 @Service
-public class ApplicationServiceImpl implements ApplicationService {
+public class DeploymentServiceImpl implements DeploymentService {
 
 
     private final ClusterService clusterService;
@@ -54,7 +50,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     private final ImageService imageService;
 
     @Autowired
-    public ApplicationServiceImpl(ClusterService clusterService, ImageService imageService) {
+    public DeploymentServiceImpl(ClusterService clusterService, ImageService imageService) {
         this.clusterService = clusterService;
         this.imageService = imageService;
     }
@@ -129,7 +125,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         container.setImagePullPolicy(deployDto.getImagePullPolicy());
 //        List<ContainerPort> ports = new ArrayList<>();
 //        ContainerPort port = new ContainerPort();
-//        port.setContainerPort(deployDto.getPort());
+//        port.setContainerP0000000000000000000rt(deployDto.getPort());
 //        ports.add(port);
 //        container.setPorts(ports);
         containers.add(container);

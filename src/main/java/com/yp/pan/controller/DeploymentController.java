@@ -9,7 +9,7 @@ import com.yp.pan.dto.DeployDto;
 import com.yp.pan.dto.HpaDto;
 import com.yp.pan.dto.StartAppDto;
 import com.yp.pan.dto.StopAppDto;
-import com.yp.pan.service.ApplicationService;
+import com.yp.pan.service.DeploymentService;
 import com.yp.pan.util.ServerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -23,13 +23,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @SuppressWarnings("JavaDoc")
 @RestController
-@RequestMapping("/application")
-public class ApplicationController {
+@RequestMapping("/deployment")
+public class DeploymentController {
 
-    private final ApplicationService applicationService;
+    private final DeploymentService applicationService;
 
     @Autowired
-    public ApplicationController(ApplicationService applicationService) {
+    public DeploymentController(DeploymentService applicationService) {
         this.applicationService = applicationService;
     }
 
